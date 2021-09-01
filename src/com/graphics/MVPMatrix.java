@@ -6,10 +6,10 @@ import org.joml.Vector3f;
 public class MVPMatrix {
 
 	private static final float FOV = (float) Math.toRadians(60.0f);
+	// The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
+	private static final float Z_NEAR = 0.1f;
 
-	private static final float Z_NEAR = 0.01f;
-
-	private static final float Z_FAR = 1000.f;
+	private static final float Z_FAR = 100.f;
 
 	private final Matrix4f projectionMatrix;
 	private final Matrix4f worldMatrix;
