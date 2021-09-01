@@ -2,8 +2,13 @@ package com.level;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joml.Vector3f;
 import com.graphics.Window;
+import com.utils.BufferUtils;
 import com.graphics.Texture;
 import com.graphics.VertexArray;
 
@@ -48,99 +53,80 @@ public class Cube {
     			0.5f, -0.5f, 0.5f,
     			// V3
     			0.5f, 0.5f, 0.5f,
+//    			
+    			
+    			
+    			// V4
+    			-0.5f, 0.5f, -0.5f, 
+    			// V5
+    			0.5f, 0.5f, -0.5f,
+    			// V1
+    			-0.5f, -0.5f, 0.5f,
+    			// V0
+    			-0.5f, 0.5f, 0.5f,
+    			
+    			// V3
+    			0.5f, 0.5f, 0.5f,
+    			// V2
+    			0.5f, -0.5f, 0.5f,
+    			// V6
+    			0.5f, -0.5f, -0.5f,
+    			// V7
+    			0.5f, 0.5f, -0.5f,
+    			
+    			// V6
+    			0.5f, -0.5f, -0.5f,
+    			// V7
+    			0.5f, 0.5f, -0.5f,
     			// V4
     			-0.5f, 0.5f, -0.5f,
     			// V5
-    			0.5f, 0.5f, -0.5f,
+    			-0.5f, -0.5f, -0.5f,
+
+    			
+//    			
+     			// V1
+    			-0.5f, -0.5f, 0.5f,
+    			// V5
+    			-0.5f, -0.5f, -0.5f,
     			// V6
-    			-0.5f, -0.5f, -0.5f,
+    			0.5f, -0.5f, -0.5f,
+    			// V2
+    			0.5f, -0.5f, 0.5f,
+//
+    			
+    			
+    			// V4
+    			-0.5f, 0.5f, -0.5f, 
     			// V7
-    			0.5f, -0.5f, -0.5f,
-    			
-    			// For text coords in top face
-    			// V8: V4 repeated
-    			-0.5f, 0.5f, -0.5f,
-    			// V9: V5 repeated
     			0.5f, 0.5f, -0.5f,
-    			// V10: V0 repeated
-    			-0.5f, 0.5f, 0.5f,
-    			// V11: V3 repeated
+    			// V3
     			0.5f, 0.5f, 0.5f,
-    			
-    			// For text coords in right face
-    			// V12: V3 repeated
-    			0.5f, 0.5f, 0.5f,
-    			// V13: V2 repeated
-    			0.5f, -0.5f, 0.5f,
-    			
-    			// For text coords in left face
-    			// V14: V0 repeated
+    			// V0
     			-0.5f, 0.5f, 0.5f,
-    			// V15: V1 repeated
-    			-0.5f, -0.5f, 0.5f,
     			
-    			// For text coords in bottom face
-    			// V16: V6 repeated
-    			-0.5f, -0.5f, -0.5f,
-    			// V17: V7 repeated
-    			0.5f, -0.5f, -0.5f,
-    			// V18: V1 repeated
-    			-0.5f, -0.5f, 0.5f,
-    			// V19: V2 repeated
-    			0.5f, -0.5f, 0.5f,
     	};
-    	float[] textCoords = new float[]{
-    			0.5f, 0.5f,
-    			0.0f, 0.5f,
-    			0.0f, 0.0f,
-    			0.5f, 0.0f,
-    			
-    			0.0f, 0.0f,
-    			0.5f, 0.0f,
-    			0.0f, 0.5f,
-    			0.5f, 0.5f,
-    			
-    			// For text coords in top face
-    			0.0f, 0.5f,
-    			0.5f, 0.5f,
-    			0.0f, 1.0f,
-    			0.5f, 1.0f,
-    			
-    			// For text coords in right face
-    			0f, 0.0f,
-    			0f, 0.5f,
-    			
-    			// For text coords in left face
-    			0.5f, 0.0f,
-    			0.5f, 0.5f,
-    			
-    			// For text coords in bottom face
-    			0.5f, 0.0f,
-    			1.0f, 0.0f,
-    			0.5f, 0.5f,
-    			1.0f, 0.5f,
-    	};
+    	
+
+    	// no brainer rule for setting up the index of each rect : {+0, +1, +2} {+3, +0, +2}
     	int[] indices = new int[]{
-    			// Front face
-    			0, 1, 3, 3, 1, 2,
-    			// Top Face
-    			8, 10, 11, 9, 8, 11,
-    			// Right face
-    			12, 13, 7, 5, 12, 7,
-    			// Left face
-    			14, 15, 6, 4, 14, 6,
-    			// Bottom face
-    			16, 18, 19, 17, 16, 19,
-    			// Back face
-    			4, 6, 7, 5, 4, 7,
+    			0, 1, 2, 3, 0, 2,
+    			
+    			4, 5, 6, 7, 4, 6,
+
+    			8, 9, 10, 11, 8, 10,
+
+    			12, 13, 14, 15, 12, 14,
+
+    			16, 17, 18, 19, 16, 18,
+    			
+    			20, 21, 22, 23, 20, 22
     	};
-    	// 이건 그래픽 파일을 넣어줘서 해주면 되는거고
-    	// texture는 여기 또 왜 넣어주는거지?
-    	//render 시에 bind unbind를 하긴 해야하지만.
-    	//오 이건 내가 쓴 vertex array 보다는 ... 
     	
     	//TODO 6개의 texture를 면마다 잡아서 여기서 하나의 cube를 만들ㅇ저구
-    	texture = new Texture("res/grassblock.png");
+    	texture = new Texture("res/3d_cube.jpg");
+    	float[] textCoords = calcTextCoords(2, 3);
+
     	
     	VertexArray mesh = new VertexArray(positions, indices, textCoords,  texture);
     	
@@ -152,7 +138,43 @@ public class Cube {
     	
     	cubeItems = new CubeItem[] { cube_1, cube_2 };
     }
+    
+    private float[] calcTextCoords( int numCols, int numRows) {
 
+    	List<Float> positions = new ArrayList<>();
+    	List<Float> textCoords = new ArrayList<>();
+    	List<Integer> indices   = new ArrayList<>();
+
+    	float imageWidth = (float)texture.getWidth();
+    	float imageHeight = (float)texture.getHeight();
+    	
+    	float tileWidth = imageWidth / (float)numCols;
+    	float tileHeight = imageHeight/ (float)numRows;
+
+    	for(int i=0; i<numCols; i++) {
+    		for(int j=0; j<numRows; j++ )
+    		{
+
+    			// Left Top vertex
+    			textCoords.add((float)i*tileWidth/ imageWidth );
+    			textCoords.add((float)j*tileHeight / imageHeight);
+
+    			// Left Bottom vertex
+    			textCoords.add((float)i*tileWidth / imageWidth );
+    			textCoords.add((float)(j+1)*tileHeight / imageHeight);
+
+    			// Right Bottom vertex
+    			textCoords.add((float)(i+1)*tileWidth / imageWidth );
+    			textCoords.add((float)(j+1)*tileHeight / imageHeight);
+
+    			// Right Top vertex
+    			textCoords.add((float)(i+1)*tileWidth / imageWidth );
+    			textCoords.add((float)j*tileHeight / imageHeight);
+    		}
+    	}
+    	return BufferUtils.listToArray(textCoords);
+    }
+    
     public void init(Window window) throws Exception {
     }
 

@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import java.util.Date;
-import java.util.Timer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -18,7 +17,7 @@ import com.graphics.Shader;
 import com.graphics.Window;
 import com.level.Cube;
 import com.level.CubeItem;
-
+import com.utils.Timer;
 
 import com.graphics.MVPMatrix;
 
@@ -36,8 +35,9 @@ public class Main implements Runnable {
 	
 	private Cube cubeobj;
 	
-	
-	
+    public static final int TARGET_UPS = 30;
+    private final Timer timer= new Timer();
+    
 	public void start() throws InterruptedException {
 		
 		thread = new Thread(this, "3D Cube");
@@ -56,37 +56,36 @@ public class Main implements Runnable {
 		Shader.loadAll();
 		window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glActiveTexture(GL_TEXTURE1);
-		
+		timer.init();
 //		Shader.cubeshader.setUniform1f("texture_sampler", 1);
 //		Shader.cubeshader.setUniform4fv("worldMatrix", null);
 //		Shader.cubeshader.setUniform4fv("projectionMatrix", null);
 		
 	}
 	
-	 protected void runningLoop() {
-//	        float elapsedTime;
-//	        float accumulator = 0f;
-//	        float interval = 1f / TARGET_UPS;
+	protected void runningLoop() {
+		float elapsedTime;
+		float accumulator = 0f;
+		float interval = 1f / TARGET_UPS;
 
-//	        boolean running = true;
-	        while ( !window.windowShouldClose()) {
-//	            elapsedTime = timer.getElapsedTime();
-//	            accumulator += elapsedTime;
+		while ( !window.windowShouldClose()) {
+			elapsedTime = timer.getElapsedTime();
+			accumulator += elapsedTime;
 
-	            cubeobj.input(window);
+			cubeobj.input(window);
 
-//	            while (accumulator >= interval) {
-	                update();
-//	                accumulator -= interval;
-//	            }
+			while (accumulator >= interval) {
+				update();
+				accumulator -= interval;
+			}
 
-	            render();
+			render();
 
-//	            if ( !window.isvSync() ) {
-//	                sync();
-//	            }
-	        }
-	    }
+			//	            if ( !window.isvSync() ) {
+			//	                sync();
+			//	            }
+		}
+	}
 	 
 	
 	public void run() {
