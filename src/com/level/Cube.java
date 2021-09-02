@@ -130,8 +130,9 @@ public class Cube {
     	
     	VertexArray mesh = new VertexArray(positions, indices, textCoords,  texture);
     	
+    	
     	CubeItem cube_1 = new CubeItem(mesh);
-    	cube_1.setPosition(3f, 2f, -20f);
+    	cube_1.setPosition(3f, -0.2f, -20f);
     	
     	CubeItem cube_2 = new CubeItem(mesh);
     	cube_2.setPosition(3f, 5f, -20f);
@@ -234,6 +235,12 @@ public class Cube {
         	rotationY = -1;
         }
         
+        else if (window.isKeyPressed(GLFW_KEY_R)) {
+        	rotationZ = 1;
+        }else if (window.isKeyPressed(GLFW_KEY_F)) {
+        	rotationZ = -1;
+        }
+        
     }
 
     public void update() {
@@ -241,35 +248,96 @@ public class Cube {
 //    	{
 //    		System.out.println("The # of gameitems are " + cubeItems.length);
 //    	}
-        for (CubeItem each_cube : cubeItems) {
-            // Update position
-            Vector3f itemPos = each_cube.getPosition();
-            float posx = itemPos.x + displxInc * 0.05f;
-            float posy = itemPos.y + displyInc * 0.05f;
-            float posz = itemPos.z + displzInc * 0.05f;
-            each_cube.setPosition(posx, posy, posz);
-            
-            // Update scale
-            float scale = each_cube.getScale();
-            scale += scaleInc * 0.05f;
-            if ( scale < 0 ) {
-                scale = 0;
-            }
-            each_cube.setScale(scale);
-            
-            // Update rotation angle
-            float rotation_x = each_cube.getRotation().x +  1.5f * rotationX; //
-            float rotation_y = each_cube.getRotation().y +  1.5f * rotationY; //1.5f *
-            
-            if ( rotation_x > 360 ) {
-            	rotation_x = 0;
-            }
-            if ( rotation_y > 360 ) {
-            	rotation_y = 0;
-            }
-            each_cube.setRotation(rotation_x, rotation_y, 0);        
-            System.out.println("x :" + each_cube.getPosition().x + ", y: " + each_cube.getPosition().y + ", z: "+ each_cube.getPosition().z);
-        }
+    	/*if there is any defined Keyboard input, move the cube according to that*/
+    	
+    	boolean manualInput = true;
+    	if(manualInput)
+    	{
+    		for (CubeItem each_cube : cubeItems) {
+    			// Update position
+    			//itemPos should be deep-copied, but seems like joml lib doens't have implementation of clone
+    			Vector3f itemPos = new Vector3f();
+    			
+    			itemPos.x = each_cube.getPosition().x;
+    			itemPos.y = each_cube.getPosition().y;
+    			itemPos.z = each_cube.getPosition().z;
+    			
+    			float posx = itemPos.x + displxInc * 0.05f;
+    			float posy = itemPos.y + displyInc * 0.05f;
+    			float posz = itemPos.z + displzInc * 0.05f;
+
+    			each_cube.setPosition(posx, posy, posz);
+
+    			if(collisionCheck(each_cube))
+    			{
+    				//if collision, rollback
+    				each_cube.setPosition(itemPos.x, itemPos.y, itemPos.z);
+    			}
+
+    			// Update scale : should I keep this as movement of Z is doing the same function
+    			float scale = each_cube.getScale();
+    			scale += scaleInc * 0.05f;
+    			if ( scale < 0 ) {
+    				scale = 0;
+    			}
+    			each_cube.setScale(scale);
+
+    			// Update rotation angle
+    			float rotation_x = each_cube.getRotation().x +  1.5f * rotationX; //
+    			float rotation_y = each_cube.getRotation().y +  1.5f * rotationY; //1.5f *
+    			float rotation_z = each_cube.getRotation().z +  1.5f * rotationZ;
+
+    			each_cube.setRotation(rotation_x, rotation_y, rotation_z);   			     
+    			System.out.println("x :" + each_cube.getPosition().x + ", y: " + each_cube.getPosition().y + ", z: "+ each_cube.getPosition().z);
+    		}
+    	}
+    	/*No keyboard input then, each cube takes the random movement*/
+    	else
+    	{
+    		for (CubeItem each_cube : cubeItems) {
+    			each_cube.randomMove();
+
+
+    		}
+    	}
+    }
+    
+    private boolean collisionCheck(CubeItem cubeItem) {
+    	
+    	boolean collide = false;
+    	
+    	for(CubeItem each_cube : cubeItems)
+    	{
+    		if(cubeItem.getCubeID() != each_cube.getCubeID())
+    		{
+    			collide = intersect(each_cube, cubeItem);
+    			if(collide)
+    				break;
+    		}
+    	}
+    	return collide;
+    }
+    
+    
+    
+    private boolean intersect(CubeItem cube_a, CubeItem cube_b)
+    {
+    	float x1, x2;
+    	float y1, y2;
+    	float z1, z2;
+    	
+    	x1 = cube_a.getPosition().x;
+    	x2 = cube_b.getPosition().x;
+    	y1 = cube_a.getPosition().y;
+    	y2 = cube_b.getPosition().y;
+    	z1 = cube_a.getPosition().z;
+    	z2 = cube_b.getPosition().z;
+
+    	float distance =  (float)Math.sqrt((x1 - x2) * (x1 - x2) + 
+    			(y1 - y2) * (y1 - y2) +
+    			(z1 - z2) * (z1 - z2));
+    	
+    	return distance < (float)(Math.sqrt(2));
     }
 
 }
