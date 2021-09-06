@@ -29,5 +29,6 @@ public class MVPMatrix {
 		return worldMatrix.translation(offset).rotateX((float)Math.toRadians(rotation.x)).rotateY((float)Math.toRadians(rotation.y))
 				.rotateZ((float)Math.toRadians(rotation.z)).scale(scale);
 	}
+	
 
 }

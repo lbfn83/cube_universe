@@ -19,7 +19,7 @@ public class Shader {
 	public static final int VERTEX_ATTRIB = 0;
 	public static final int TCOORD_ATTRIB = 1;
 	
-	public static Shader cubeshader;
+	public static Shader cubeshader, bgshader;
 	
 	private boolean enabled = false;
 	
@@ -34,6 +34,7 @@ public class Shader {
 	public static void loadAll()
 	{
 		cubeshader = new Shader("shader/vertex.vs" , "shader/fragment.fs");
+		bgshader = new Shader("shader/bg_vertex.vs" , "shader/bg_fragment.fs");
 	}
 	//Uniform 변수의 location을 알려주는 거다. uniform 변수의 값 자체는 get할 이유는 없다.. set 만 있을 뿐
 	public int getUniform(String name)

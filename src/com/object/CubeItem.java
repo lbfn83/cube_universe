@@ -1,4 +1,4 @@
-package com.level;
+package com.object;
 
 import org.joml.Vector3f;
 
@@ -66,10 +66,10 @@ public class CubeItem {
     		overTheLimit = true;
     		z = -5f;
     	}
-    	if ( z < -15f )
+    	if ( z < -30f )
     	{
     		overTheLimit = true;
-    		z = -15f;
+    		z = -30f;
     	}
     	
     	if(overTheLimit)
@@ -99,6 +99,9 @@ public class CubeItem {
 		}
 		if ( y > 360 ) {
 			y = 0;
+		}
+		if ( z > 360 ) {
+			z = 0;
 		}
         this.rotation.x = x;
         this.rotation.y = y;

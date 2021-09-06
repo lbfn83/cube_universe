@@ -1,4 +1,4 @@
-package com.level;
+package com.object;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -39,7 +39,7 @@ public class Cube {
 
 	private int rotationY;
 
-	private Texture texture; 
+//	private Texture texture; 
 	
 	
     public Cube() {
@@ -124,8 +124,8 @@ public class Cube {
     	};
     	
     	//TODO 6개의 texture를 면마다 잡아서 여기서 하나의 cube를 만들ㅇ저구
-    	texture = new Texture("res/3d_cube.jpg");
-    	float[] textCoords = calcTextCoords(2, 3);
+    	Texture texture = new Texture("res/3d_cube.jpg");
+    	float[] textCoords = calcTextCoords(2, 3, texture);
 
     	
     	VertexArray mesh = new VertexArray(positions, indices, textCoords,  texture);
@@ -152,7 +152,7 @@ public class Cube {
     	cubeItems = new CubeItem[] { cube_1, cube_2, cube_3, cube_4, cube_5, cube_6 };
     }
     
-    private float[] calcTextCoords( int numCols, int numRows) {
+    private float[] calcTextCoords( int numCols, int numRows, Texture texture) {
 
     	List<Float> positions = new ArrayList<>();
     	List<Float> textCoords = new ArrayList<>();

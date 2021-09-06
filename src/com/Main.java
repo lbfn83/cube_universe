@@ -10,13 +10,15 @@ import java.util.Date;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import com.graphics.Shader;
 import com.graphics.Window;
-import com.level.Cube;
-import com.level.CubeItem;
+import com.object.Background;
+import com.object.Cube;
+import com.object.CubeItem;
 import com.utils.Timer;
 
 import com.graphics.MVPMatrix;
@@ -34,6 +36,7 @@ public class Main implements Runnable {
 	private Thread thread;
 	
 	private Cube cubeobj;
+	private Background bg;
 	
     public static final int TARGET_UPS = 30;
     private final Timer timer= new Timer();
@@ -52,10 +55,15 @@ public class Main implements Runnable {
 		
 		
 		cubeobj = new Cube();
+		bg = new Background();
+		bg.setPosition(-4f, -1.8f, -30f);
+		
+		
 		mvpMatrix = new MVPMatrix();
 		Shader.loadAll();
 		window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glActiveTexture(GL_TEXTURE1);
+
 		timer.init();
 //		Shader.cubeshader.setUniform1f("texture_sampler", 1);
 //		Shader.cubeshader.setUniform4fv("worldMatrix", null);
@@ -75,10 +83,10 @@ public class Main implements Runnable {
 			cubeobj.input(window);
 
 			while (accumulator >= interval) {
-				update();
 				accumulator -= interval;
 			}
 
+			update();
 			render();
 
 			//	            if ( !window.isvSync() ) {
@@ -121,17 +129,44 @@ public class Main implements Runnable {
 		
 		
 //		
+		Shader.bgshader.enable();
+		
 		Shader.cubeshader.enable();
 
         //Update projection matrix
         Matrix4f projectionMatrix = mvpMatrix.getProjectionMatrix( window.getWidth(), window.getHeight());
+       
+        Shader.bgshader.setUniform4fv("projectionMatrix", projectionMatrix);
+         
         Shader.cubeshader.setUniform4fv("projectionMatrix", projectionMatrix);
+       
+       
+        
+        Shader.bgshader.setUniform1i("texture_sampler", 1);
+ 
         Shader.cubeshader.setUniform1i("texture_sampler", 1);
+       
+        Matrix4f viewmatrix = new Matrix4f();
+        viewmatrix.setLookAt( new Vector3f(0,0,40),  new Vector3f(0f,0f,0f), new Vector3f(0f,-1f,0f));
+        
+        Matrix4f worldMatrix = mvpMatrix.getWorldMatrix(
+        		bg.getPosition(),
+        		bg.getRotation(),
+        		bg.getScale());
+//        worldMatrix.m30(0);
+//        worldMatrix.m31(0);
+//        worldMatrix.m32(0);
+        viewmatrix.mul(worldMatrix);
+        
+        Shader.bgshader.setUniform4fv("worldMatrix", viewmatrix);
+        
+        bg.getMesh().render();
+        
         
      // Render each gameItem
         for (CubeItem element : cubeobj.getCubeItems()) {
             // Set world matrix for this item
-            Matrix4f worldMatrix = mvpMatrix.getWorldMatrix(
+            worldMatrix = mvpMatrix.getWorldMatrix(
             		element.getPosition(),
             		element.getRotation(),
             		element.getScale());
@@ -141,11 +176,14 @@ public class Main implements Runnable {
             element.getMesh().unbind();
         }
         
+        bg.getMesh().unbind();
+        Shader.bgshader.disable();
         
         
 		
         Shader.cubeshader.disable();
 		
+        
         window.render();
 	}
 	public static void main(String[] args) {
