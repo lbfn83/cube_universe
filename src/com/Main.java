@@ -28,49 +28,65 @@ import com.graphics.MVPMatrix;
 
 public class Main implements Runnable {
 	
+	
+	private Camera camera;
+	private Cube cubegroup;
+	private Background bg;
+
 	private Window window;
 	private MVPMatrix mvpMatrix;
-	private Camera camera;
+	
+	private MouseInput mouseInput;
+	private Timer timer;
+	
 	
 	private int width = 1280;
 	private int height = 720;
 
 	private Thread thread;
 	
-	private Cube cubeobj;
-	private Background bg;
-	
     public static final int TARGET_UPS = 90;
-    private final Timer timer= new Timer();
     
-    private final MouseInput mouseInput = new MouseInput();
     
 	public void start() throws InterruptedException {
 		
 		thread = new Thread(this, "3D Cube");
 		thread.start();
 	}
+	
+	public void run() {
+		
+		init();
+		
+		runningLoop();
+		
+		glfwTerminate();
+		
+	}
+	
 	// game Engine part
 	private void init() {
-		//Window creation
+
 		window = new Window("3D Cube with pic", width, height);
 		window.init();
-		
-		cubeobj = new Cube();
+
 		camera = new Camera(new Vector3f(0f, 0f, 0f));
-		
-//		camera.setPosition(0.65f, 1.15f, 4.34f);
+		cubegroup = new Cube();
 		
 		bg = new Background();
 		bg.setPosition(-0f, -0f, -0f);
-		
+
 		
 		mvpMatrix = new MVPMatrix();
+		
 		Shader.loadAll();
 		window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glActiveTexture(GL_TEXTURE1);
 
+		timer= new Timer();
 		timer.init();
+		
+		mouseInput = new MouseInput();
 		mouseInput.init(window);
 		
 	}
@@ -84,15 +100,18 @@ public class Main implements Runnable {
 			elapsedTime = timer.getElapsedTime();
 			accumulator += elapsedTime;
 
-			cubeobj.input(window);
+			//			System.out.println("time: " + accumulator);
+
+			cubegroup.input(window);
 			//Get the delta of mouse cursor movement
 			mouseInput.input(window);
 
-			camera.update(mouseInput);
-			
+			//Camera's movement is much smoother when it is not regulated by timer
+			camera.updateMouse(mouseInput);
 			while (accumulator >= interval) {
 				accumulator -= interval;
-				cubeobj.update(mouseInput);
+				camera.updateKeyboard(mouseInput);
+				cubegroup.update();
 			}
 
 			render();
@@ -103,22 +122,6 @@ public class Main implements Runnable {
 		}
 	}
 	 
-	
-	public void run() {
-		init();
-		
-		runningLoop();
-
-		glfwTerminate();
-		
-	}
-	
-
-	private void update()
-	{
-		
-		
-	}
 	
 	private void render()
 	{
@@ -147,12 +150,12 @@ public class Main implements Runnable {
         Matrix4f projectionMatrix = mvpMatrix.getProjectionMatrix( window.getWidth(), window.getHeight());
         
         Matrix4f viewMatrix = mvpMatrix.getViewMatrix(camera);
-//        viewMatrix.setLookAt( new Vector3f(0,0,5),  new Vector3f(0f,0f,0f), new Vector3f(0f,-1f,0f));
-        Matrix4f viewMatrixForCube = new Matrix4f(viewMatrix);
         
-//        viewMatrix.m30(0);
-//        viewMatrix.m31(0);
-//        viewMatrix.m32(0);
+//        Matrix4f viewMatrixForCube = new Matrix4f(viewMatrix);
+        /*When the background should be fixed, Below statements are required to disable tranlation movement*/
+        //        viewMatrix.m30(0);
+        //        viewMatrix.m31(0);
+        //        viewMatrix.m32(0);
         
         Shader.bgshader.setUniform4fv("projectionMatrix", projectionMatrix);
        
@@ -168,14 +171,16 @@ public class Main implements Runnable {
         
         bg.getMesh().render();
         
+        
+        
         Shader.cubeshader.setUniform4fv("projectionMatrix", projectionMatrix);
         
         Shader.cubeshader.setUniform1i("texture_sampler", 1);
         
-        Shader.cubeshader.setUniform4fv("viewMatrix", viewMatrixForCube);
+        Shader.cubeshader.setUniform4fv("viewMatrix", viewMatrix);
         
      // Render each gameItem
-        for (CubeItem element : cubeobj.getCubeItems()) {
+        for (CubeItem element : cubegroup.getCubeItems()) {
             // Set world matrix for this item
             modelMatrix = mvpMatrix.getModelMatrix(
             		element.getPosition(),
@@ -195,6 +200,9 @@ public class Main implements Runnable {
         
         window.render();
 	}
+	
+	
+	
 	public static void main(String[] args) {
 		// 'new' => instantiate Main class implicitly
 		try {

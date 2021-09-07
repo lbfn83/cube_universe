@@ -51,29 +51,29 @@ public class Camera {
         position.y += offsetY;
         
         
-        if ( position.x > 40f - 0.5f )
+        if ( position.x > Background.scale - 0.5f )
         {
-        	position.x =  40f - 0.5f - 0.5f;
+        	position.x =  Background.scale - 0.5f;
         }
-        if ( position.x < - (40f - 0.5f) )
+        if ( position.x < - (Background.scale - 0.5f) )
         {
-        	position.x = -( 40f - 0.5f);
+        	position.x = -( Background.scale - 0.5f);
         }
-        if ( position.y > 40f - 0.5f )
+        if ( position.y > Background.scale - 0.5f )
         {
-        	position.y =  40f - 0.5f - 0.5f;
+        	position.y =  Background.scale - 0.5f;
         }
-        if ( position.y < - (40f - 0.5f) )
+        if ( position.y < - (Background.scale - 0.5f) )
         {
-        	position.y = -( 40f - 0.5f);
+        	position.y = -( Background.scale - 0.5f);
         }
-        if ( position.z > 40f - 0.5f )
+        if ( position.z > Background.scale - 0.5f )
         {
-        	position.z =  40f - 0.5f - 0.5f;
+        	position.z =  Background.scale - 0.5f ;
         }
-        if ( position.z < - (40f - 0.5f) )
+        if ( position.z < - (Background.scale - 0.5f) )
         {
-        	position.z = -( 40f - 0.5f);
+        	position.z = -( Background.scale - 0.5f);
         }
     }
 
@@ -92,18 +92,20 @@ public class Camera {
         rotation.y += offsetY;
         rotation.z += offsetZ;
     }
-    
-    public void update(MouseInput mouseinput)
+    public void updateMouse(MouseInput mouseinput)
     {
     	if(mouseinput.isRightButtonPressed())
-		{
-			// x rotation or y rotation and how far should it rotate
-			 Vector2f rotVec = mouseinput.getDisplVec();
-			 
-	         this.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-		}
-		this.movePosition(mouseinput.getDisplInc().x * 0.05f, mouseinput.getDisplInc().y * 0.05f, mouseinput.getDisplInc().z * 0.05f);
-		System.out.println("Camera x :" + this.getPosition().x + ", y: " + this.getPosition().y + ", z: "+ this.getPosition().z);
+    	{
+    		// x rotation or y rotation and how far should it rotate
+    		Vector2f rotVec = mouseinput.getDisplVec();
+    		
+    		this.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+    	}    	
+    }
+    public void updateKeyboard(MouseInput mouseinput)
+    {
+		this.movePosition(mouseinput.getDisplInc().x * 0.5f, mouseinput.getDisplInc().y * 0.5f, mouseinput.getDisplInc().z * 0.5f);
+//		System.out.println("Camera x :" + this.getPosition().x + ", y: " + this.getPosition().y + ", z: "+ this.getPosition().z);
 
     }
 }

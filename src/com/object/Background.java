@@ -114,7 +114,7 @@ public class Background  {
 				1.f, 0.f,
 				1.f, 0.5f,
 		};
-		Texture texture = new Texture("res/skybox.png");
+		Texture texture = new Texture("res/universe.jpg");
 
 
 		mesh = new VertexArray(positions, indices, textCoords,  texture);

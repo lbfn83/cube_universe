@@ -71,6 +71,13 @@ public class Window {
             }
         });
 
+        glfwSetWindowSizeCallback(windowHandle, (window, width, height) -> {
+        	this.width = width;
+        	this.height = height;
+        	this.resized = true;
+        });
+
+        
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         // Center our window
