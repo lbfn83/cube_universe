@@ -6,15 +6,22 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+
 import com.graphics.Window;
 import com.utils.BufferUtils;
+import com.utils.MouseInput;
 import com.graphics.Texture;
 import com.graphics.VertexArray;
 
 
 public class Cube {
 
+
+
+//	private final Camera camera;
+	
     private int displxInc = 0;
 
     private int displyInc = 0;
@@ -150,6 +157,9 @@ public class Cube {
     	cube_6.setPosition(-1f, 0f, -9f);
     	
     	cubeItems = new CubeItem[] { cube_1, cube_2, cube_3, cube_4, cube_5, cube_6 };
+    	
+//    	camera = new Camera();
+    	
     }
     
     private float[] calcTextCoords( int numCols, int numRows, Texture texture) {
@@ -188,8 +198,6 @@ public class Cube {
     	return BufferUtils.listToArray(textCoords);
     }
     
-    public void init(Window window) throws Exception {
-    }
 
     public void input(Window window) {
         displyInc = 0;
@@ -201,17 +209,19 @@ public class Cube {
         rotationY = 0;
         rotationZ = 0;
         
-        if (window.isKeyPressed(GLFW_KEY_UP)) {
-            displyInc = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            displyInc = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-            displxInc = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-            displxInc = 1;
-        } 
-        //should be q e
-        else if (window.isKeyPressed(GLFW_KEY_Q)) {
+//        if (window.isKeyPressed(GLFW_KEY_UP)) {
+//            displyInc = 1;
+//        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+//            displyInc = -1;
+//        } else if (window.isKeyPressed(GLFW_KEY_LEFT)) {
+//            displxInc = -1;
+//        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
+//            displxInc = 1;
+//        } 
+//        //should be q e
+//        else 
+        	
+        	if (window.isKeyPressed(GLFW_KEY_Q)) {
             displzInc = -1;
         } else if (window.isKeyPressed(GLFW_KEY_E)) {
             displzInc = 1;
@@ -243,7 +253,7 @@ public class Cube {
         
     }
 
-    public void update() {
+    public void update(MouseInput mouseinput) {
 //    	if(cubeItems.length > 1)
 //    	{
 //    		System.out.println("The # of gameitems are " + cubeItems.length);
@@ -253,6 +263,9 @@ public class Cube {
     	boolean manualInput = true;
     	if(manualInput)
     	{
+    		
+    		
+    		
     		for (CubeItem each_cube : cubeItems) {
     			// Update position
     			//itemPos should be deep-copied, but seems like joml lib doens't have implementation of clone
@@ -301,8 +314,9 @@ public class Cube {
     		}
     	}
     }
-    
-    private boolean collisionCheck(CubeItem cubeItem) {
+
+
+	private boolean collisionCheck(CubeItem cubeItem) {
     	
     	boolean collide = false;
     	

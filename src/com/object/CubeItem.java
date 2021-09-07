@@ -41,37 +41,36 @@ public class CubeItem {
     public void setPosition(float x, float y, float z) {
     	
     	boolean overTheLimit = false;
-    	if ( x > 4f )
+//    	if ( x > Background.scale - 0.5f )
+//    	{
+//    		overTheLimit = true;
+//    		x =  Background.scale - 0.5f;
+//    	}
+//    	if ( x < - (Background.scale - 0.5f) )
+//    	{
+//    		overTheLimit = true;
+//    		x = -( Background.scale - 0.5f);
+//    	}
+//    	if ( y > Background.scale - 0.5f )
+//    	{
+//    		overTheLimit = true;
+//    		y = Background.scale - 0.5f;
+//    	}
+//    	if ( y < -(Background.scale - 0.5f) )
+//    	{
+//    		overTheLimit = true;
+//    		y = -(Background.scale - 0.5f);
+//    	}
+    	if ( z > Background.scale - 0.5f )
     	{
     		overTheLimit = true;
-    		x = 4f;
+    		z = Background.scale - 0.5f;
     	}
-    	if ( x < -4f )
-    	{
-    		overTheLimit = true;
-    		x = -4f;
-    	}
-    	if ( y > 1.8f )
-    	{
-    		overTheLimit = true;
-    		y = 1.8f;
-    	}
-    	if ( y < -1.8 )
-    	{
-    		overTheLimit = true;
-    		y = -1.8f;
-    	}
-    	if ( z > -5f )
-    	{
-    		overTheLimit = true;
-    		z = -5f;
-    	}
-    	if ( z < -30f )
-    	{
-    		overTheLimit = true;
-    		z = -30f;
-    	}
-    	
+//    	if ( z < - (Background.scale - 0.5f) )
+//    	{
+//    		overTheLimit = true;
+//    		z = -(Background.scale - 0.5f);
+//    	}
     	if(overTheLimit)
     		System.out.println("Cube Item " + cubeID + "'s coordination is over the limit so it is adjusted");
     	

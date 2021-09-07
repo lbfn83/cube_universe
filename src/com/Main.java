@@ -13,14 +13,15 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import com.utils.MouseInput;
 
 import com.graphics.Shader;
 import com.graphics.Window;
 import com.object.Background;
+import com.object.Camera;
 import com.object.Cube;
 import com.object.CubeItem;
 import com.utils.Timer;
-
 import com.graphics.MVPMatrix;
 
 
@@ -29,6 +30,7 @@ public class Main implements Runnable {
 	
 	private Window window;
 	private MVPMatrix mvpMatrix;
+	private Camera camera;
 	
 	private int width = 1280;
 	private int height = 720;
@@ -38,8 +40,10 @@ public class Main implements Runnable {
 	private Cube cubeobj;
 	private Background bg;
 	
-    public static final int TARGET_UPS = 30;
+    public static final int TARGET_UPS = 90;
     private final Timer timer= new Timer();
+    
+    private final MouseInput mouseInput = new MouseInput();
     
 	public void start() throws InterruptedException {
 		
@@ -52,11 +56,13 @@ public class Main implements Runnable {
 		window = new Window("3D Cube with pic", width, height);
 		window.init();
 		
-		
-		
 		cubeobj = new Cube();
+		camera = new Camera(new Vector3f(0f, 0f, 0f));
+		
+//		camera.setPosition(0.65f, 1.15f, 4.34f);
+		
 		bg = new Background();
-		bg.setPosition(-4f, -1.8f, -30f);
+		bg.setPosition(-0f, -0f, -0f);
 		
 		
 		mvpMatrix = new MVPMatrix();
@@ -65,9 +71,7 @@ public class Main implements Runnable {
 		glActiveTexture(GL_TEXTURE1);
 
 		timer.init();
-//		Shader.cubeshader.setUniform1f("texture_sampler", 1);
-//		Shader.cubeshader.setUniform4fv("worldMatrix", null);
-//		Shader.cubeshader.setUniform4fv("projectionMatrix", null);
+		mouseInput.init(window);
 		
 	}
 	
@@ -81,12 +85,16 @@ public class Main implements Runnable {
 			accumulator += elapsedTime;
 
 			cubeobj.input(window);
+			//Get the delta of mouse cursor movement
+			mouseInput.input(window);
 
+			camera.update(mouseInput);
+			
 			while (accumulator >= interval) {
 				accumulator -= interval;
+				cubeobj.update(mouseInput);
 			}
 
-			update();
 			render();
 
 			//	            if ( !window.isvSync() ) {
@@ -108,7 +116,8 @@ public class Main implements Runnable {
 
 	private void update()
 	{
-		cubeobj.update();
+		
+		
 	}
 	
 	private void render()
@@ -133,56 +142,56 @@ public class Main implements Runnable {
 		
 		Shader.cubeshader.enable();
 
+		
         //Update projection matrix
         Matrix4f projectionMatrix = mvpMatrix.getProjectionMatrix( window.getWidth(), window.getHeight());
-       
+        
+        Matrix4f viewMatrix = mvpMatrix.getViewMatrix(camera);
+//        viewMatrix.setLookAt( new Vector3f(0,0,5),  new Vector3f(0f,0f,0f), new Vector3f(0f,-1f,0f));
+        Matrix4f viewMatrixForCube = new Matrix4f(viewMatrix);
+        
+//        viewMatrix.m30(0);
+//        viewMatrix.m31(0);
+//        viewMatrix.m32(0);
+        
         Shader.bgshader.setUniform4fv("projectionMatrix", projectionMatrix);
-         
-        Shader.cubeshader.setUniform4fv("projectionMatrix", projectionMatrix);
        
-       
-        
         Shader.bgshader.setUniform1i("texture_sampler", 1);
- 
-        Shader.cubeshader.setUniform1i("texture_sampler", 1);
-       
-        Matrix4f viewmatrix = new Matrix4f();
-        viewmatrix.setLookAt( new Vector3f(0,0,40),  new Vector3f(0f,0f,0f), new Vector3f(0f,-1f,0f));
         
-        Matrix4f worldMatrix = mvpMatrix.getWorldMatrix(
+        Shader.bgshader.setUniform4fv("viewMatrix", viewMatrix);
+        
+        Matrix4f modelMatrix = mvpMatrix.getModelMatrix(
         		bg.getPosition(),
         		bg.getRotation(),
         		bg.getScale());
-//        worldMatrix.m30(0);
-//        worldMatrix.m31(0);
-//        worldMatrix.m32(0);
-        viewmatrix.mul(worldMatrix);
-        
-        Shader.bgshader.setUniform4fv("worldMatrix", viewmatrix);
+        Shader.bgshader.setUniform4fv("modelMatrix", modelMatrix);
         
         bg.getMesh().render();
         
+        Shader.cubeshader.setUniform4fv("projectionMatrix", projectionMatrix);
+        
+        Shader.cubeshader.setUniform1i("texture_sampler", 1);
+        
+        Shader.cubeshader.setUniform4fv("viewMatrix", viewMatrixForCube);
         
      // Render each gameItem
         for (CubeItem element : cubeobj.getCubeItems()) {
             // Set world matrix for this item
-            worldMatrix = mvpMatrix.getWorldMatrix(
+            modelMatrix = mvpMatrix.getModelMatrix(
             		element.getPosition(),
             		element.getRotation(),
             		element.getScale());
-            Shader.cubeshader.setUniform4fv("worldMatrix", worldMatrix);
+            Shader.cubeshader.setUniform4fv("modelMatrix", modelMatrix);
             // Render the mes for this game item
             element.getMesh().render();
             element.getMesh().unbind();
         }
         
         bg.getMesh().unbind();
+
         Shader.bgshader.disable();
-        
-        
 		
         Shader.cubeshader.disable();
-		
         
         window.render();
 	}

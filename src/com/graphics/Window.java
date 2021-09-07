@@ -18,7 +18,12 @@ public class Window {
     
     private long windowHandle;
     
-    private boolean resized;
+    public long getWindowHandle() {
+		return windowHandle;
+	}
+
+
+	private boolean resized;
 
 
     public Window(String title, int width, int height) {

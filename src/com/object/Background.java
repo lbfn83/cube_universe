@@ -12,15 +12,14 @@ public class Background  {
 
 	private final Vector3f position;
 
-	private float scale;
+	public static final float scale  = 40f;
 
 	private final Vector3f rotation;
 
 	public Background()
 	{   	
-
+		
 		position = new Vector3f();
-		scale = 20;
 		rotation = new Vector3f();
 
 		float[] positions = new float[]{
@@ -64,17 +63,22 @@ public class Background  {
 
 		// no brainer rule for setting up the index of each rect : {+0, +1, +2} {+3, +0, +2}
 		int[] indices = new int[]{
-				3,2,1,3,1,4,
-				5,6,7,8,5,7,
-				11,10,9,11,9,12,
-				13,14,15,16,13,15,
-				19,18,17,19,17,20,
-				21,22,23,24,21,23,
+    			0, 1, 2, 3, 0, 2,
+    			
+    			4, 5, 6, 7, 4, 6,
+
+    			8, 9, 10, 11, 8, 10,
+
+    			12, 13, 14, 15, 12, 14,
+
+    			16, 17, 18, 19, 16, 18,
+    			
+    			20, 21, 22, 23, 20, 22
 		};
 
 		//TODO 6개의 texture를 면마다 잡아서 여기서 하나의 cube를 만들ㅇ저구
 		float[] textCoords = new float[]{
-				// Front Face
+				// left Face
 				0.333333f, 0.5f,
 				0.333333f, 0.f,
 				0.f, 0.f,
