@@ -2,16 +2,19 @@ package com.utils;
 
 import org.joml.Vector2d;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import com.graphics.Window;
+import com.object.Camera;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
 
-    private final Vector3i displInc;
+    private final Vector3f displInc;
 	
+    //Mouse cursor position vector
     private final Vector2f displVec;
 
     private final Vector2d previousPos;
@@ -30,7 +33,7 @@ public class MouseInput {
         previousPos = new Vector2d(-1, -1);
         currentPos = new Vector2d(0, 0);
         displVec = new Vector2f();
-        displInc = new Vector3i();
+        displInc = new Vector3f();
     }
 
     // Mouse event callback function registering	
@@ -88,7 +91,7 @@ public class MouseInput {
     	} 
 
     	// Mouse (left click drag) Input process, 
-    	// Calculate the delta of previous and current coordinates
+    	// Calculate the delta of previous and current coordinates in terms of mouse cursors
         displVec.x = 0;
         displVec.y = 0;
         
@@ -119,7 +122,7 @@ public class MouseInput {
     public boolean isRightButtonPressed() {
         return rightButtonPressed;
     }
-    public Vector3i getDisplInc() {
+    public Vector3f getDisplInc() {
     	return displInc;
     }
     

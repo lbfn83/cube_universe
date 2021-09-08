@@ -1,5 +1,6 @@
 package com.object;
 
+import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -38,18 +39,22 @@ public class Camera {
         position.y = y;
         position.z = z;
     }
-    
+    // Only Yaw rotation is implemented so far
+    // Multiply the view matrix(Translation by a rotation matrix
     public void movePosition(float offsetX, float offsetY, float offsetZ) {
-        if ( offsetZ != 0 ) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y)) * offsetZ;
-        }
-        if ( offsetX != 0) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
-        }
-        position.y += offsetY;
-        
+    	//sin is y coordinate, cos is x coordinate
+    	//https://gamedev.stackexchange.com/questions/90208/how-to-calculate-a-direction-vector-for-camera
+    	//이건 아무래도 rotation을 먹여주는 거거든
+    	//https://mathworld.wolfram.com/RotationMatrix.html
+    	
+
+        Matrix3f rotToTrslation = new Matrix3f();
+        rotToTrslation.identity().rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
+        .rotate((float)Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
+
+        position.x += rotToTrslation.m00 * offsetX  + rotToTrslation.m01 * offsetY + rotToTrslation.m02 * offsetZ;
+        position.y += rotToTrslation.m10 * offsetX  + rotToTrslation.m11 * offsetY + rotToTrslation.m12 * offsetZ;
+    	position.z += rotToTrslation.m20 * offsetX  + rotToTrslation.m21 * offsetY + rotToTrslation.m22 * offsetZ;
         
         if ( position.x > Background.scale - 0.5f )
         {

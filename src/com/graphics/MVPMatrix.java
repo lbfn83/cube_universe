@@ -33,6 +33,7 @@ public class MVPMatrix {
 		return modelMatrix.translation(offset).rotateX((float)Math.toRadians(rotation.x)).rotateY((float)Math.toRadians(rotation.y))
 				.rotateZ((float)Math.toRadians(rotation.z)).scale(scale);
 	}
+	//only take into account Yaw and Pitch
 	public Matrix4f getViewMatrix(Camera camera) {
 		Vector3f cameraPos = camera.getPosition();
 		Vector3f rotation = camera.getRotation();
