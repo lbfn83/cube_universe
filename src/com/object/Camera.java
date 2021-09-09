@@ -4,11 +4,12 @@ import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import com.utils.KeyboardInput;
 import com.utils.MouseInput;
 
 public class Camera {
 
-	private static final float MOUSE_SENSITIVITY = 0.2f;
+	private static final float MOUSE_SENSITIVITY = 0.1f;
 	
     private final Vector3f position;
     
@@ -56,29 +57,29 @@ public class Camera {
         position.y += rotToTrslation.m10 * offsetX  + rotToTrslation.m11 * offsetY + rotToTrslation.m12 * offsetZ;
     	position.z += rotToTrslation.m20 * offsetX  + rotToTrslation.m21 * offsetY + rotToTrslation.m22 * offsetZ;
         
-        if ( position.x > Background.scale - 0.5f )
+        if ( position.x > Background.scale - 1f )
         {
-        	position.x =  Background.scale - 0.5f;
+        	position.x =  Background.scale - 1f;
         }
-        if ( position.x < - (Background.scale - 0.5f) )
+        if ( position.x < - (Background.scale - 1f) )
         {
-        	position.x = -( Background.scale - 0.5f);
+        	position.x = -( Background.scale - 1f);
         }
-        if ( position.y > Background.scale - 0.5f )
+        if ( position.y > Background.scale - 1f )
         {
-        	position.y =  Background.scale - 0.5f;
+        	position.y =  Background.scale - 1f;
         }
-        if ( position.y < - (Background.scale - 0.5f) )
+        if ( position.y < - (Background.scale - 1f) )
         {
-        	position.y = -( Background.scale - 0.5f);
+        	position.y = -( Background.scale - 1f);
         }
-        if ( position.z > Background.scale - 0.5f )
+        if ( position.z > Background.scale - 1f )
         {
-        	position.z =  Background.scale - 0.5f ;
+        	position.z =  Background.scale - 1f ;
         }
-        if ( position.z < - (Background.scale - 0.5f) )
+        if ( position.z < - (Background.scale - 1f) )
         {
-        	position.z = -( Background.scale - 0.5f);
+        	position.z = -( Background.scale - 1f);
         }
     }
 
@@ -107,9 +108,9 @@ public class Camera {
     		this.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
     	}    	
     }
-    public void updateKeyboard(MouseInput mouseinput)
+    public void updateKeyboard(KeyboardInput keyboardInput)
     {
-		this.movePosition(mouseinput.getDisplInc().x * 0.5f, mouseinput.getDisplInc().y * 0.5f, mouseinput.getDisplInc().z * 0.5f);
+		this.movePosition(keyboardInput.getDisplInc().x * 0.5f, keyboardInput.getDisplInc().y * 0.5f, keyboardInput.getDisplInc().z *0.5f);
 //		System.out.println("Camera x :" + this.getPosition().x + ", y: " + this.getPosition().y + ", z: "+ this.getPosition().z);
 
     }

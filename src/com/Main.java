@@ -13,6 +13,8 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+
+import com.utils.KeyboardInput;
 import com.utils.MouseInput;
 
 import com.graphics.Shader;
@@ -36,6 +38,7 @@ public class Main implements Runnable {
 	private Window window;
 	private MVPMatrix mvpMatrix;
 	
+	private KeyboardInput keyboardInput;
 	private MouseInput mouseInput;
 	private Timer timer;
 	
@@ -86,6 +89,7 @@ public class Main implements Runnable {
 		timer= new Timer();
 		timer.init();
 		
+		keyboardInput = new KeyboardInput();
 		mouseInput = new MouseInput();
 		mouseInput.init(window);
 		
@@ -102,16 +106,16 @@ public class Main implements Runnable {
 
 			//			System.out.println("time: " + accumulator);
 
-			cubegroup.input(window);
+			keyboardInput.input(window);
 			//Get the delta of mouse cursor movement
-			mouseInput.input(window);
+			mouseInput.input();
 
 			//Camera's movement is much smoother when it is not regulated by timer
 			camera.updateMouse(mouseInput);
 			while (accumulator >= interval) {
 				accumulator -= interval;
-				camera.updateKeyboard(mouseInput);
-				cubegroup.update();
+				camera.updateKeyboard(keyboardInput);
+				cubegroup.update(keyboardInput);
 			}
 
 			render();

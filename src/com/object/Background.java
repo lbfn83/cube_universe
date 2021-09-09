@@ -12,7 +12,7 @@ public class Background  {
 
 	private final Vector3f position;
 
-	public static final float scale  = 40f;
+	public static final float scale  = 25f;
 
 	private final Vector3f rotation;
 

@@ -12,9 +12,11 @@ import org.joml.Vector3f;
 public class CubeItem {
 	private static int totalNumber = 0;
 	
-	private final float randomMin = -40f;
+	private boolean collided = false;
 	
-	private final float randomMax = 40f;
+	private final float randomMin = -Background.scale*0.95f;
+	
+	private final float randomMax = Background.scale*0.95f;
 	
 	private Random r;
 
@@ -32,16 +34,16 @@ public class CubeItem {
     
     private Vector3f displInc;
 
-	private float scale;
+	private float scale = 4f;
 
     private Vector3f rotation;
 
     public CubeItem(VertexArray va) {
+    	
     	cubeID = (totalNumber++);
         this.mesh = va;
         pivot_position = new Vector3f();
         position = new Vector3f();
-        scale = 1;
         rotation = new Vector3f();
         r= new Random();
         destination = new Vector3f(randomNumGen(), randomNumGen(), randomNumGen());
@@ -57,6 +59,12 @@ public class CubeItem {
     }
     
     public void setDestination(Vector3f destination) {
+//    	if(destination.x > randomMax )
+//    	{
+//    		destination.x = randomMax;
+//    	}
+    	
+    	
     	this.destination = destination;
     }
     
@@ -66,41 +74,7 @@ public class CubeItem {
     }
     
     public void setPosition(float x, float y, float z) {
-    	
-    	boolean overTheLimit = false;
-//    	if ( x > Background.scale - 0.5f )
-//    	{
-//    		overTheLimit = true;
-//    		x =  Background.scale - 0.5f;
-//    	}
-//    	if ( x < - (Background.scale - 0.5f) )
-//    	{
-//    		overTheLimit = true;
-//    		x = -( Background.scale - 0.5f);
-//    	}
-//    	if ( y > Background.scale - 0.5f )
-//    	{
-//    		overTheLimit = true;
-//    		y = Background.scale - 0.5f;
-//    	}
-//    	if ( y < -(Background.scale - 0.5f) )
-//    	{
-//    		overTheLimit = true;
-//    		y = -(Background.scale - 0.5f);
-//    	}
-//    	if ( z > Background.scale - 0.5f )
-//    	{
-//    		overTheLimit = true;
-//    		z = Background.scale - 0.5f;
-//    	}
-//    	if ( z < - (Background.scale - 0.5f) )
-//    	{
-//    		overTheLimit = true;
-//    		z = -(Background.scale - 0.5f);
-//    	}
-    	if(overTheLimit)
-    		System.out.println("Cube Item " + cubeID + "'s coordination is over the limit so it is adjusted");
-    	
+    	//every time set the position, its unit vector for movement should be calculated
     	Vector3f temp = new Vector3f(destination);
 		displInc = temp.sub(position);
 		displInc.normalize();
@@ -157,8 +131,19 @@ public class CubeItem {
 		{
 			destination = new Vector3f(randomNumGen(), randomNumGen(), randomNumGen());
 
-			System.out.println(displInc);
+//			System.out.println(displInc);
 		}
+		
+	}
+
+	public boolean getCollided() {
+		// TODO Auto-generated method stub
+		return collided;
+	}
+
+	public void setCollided(boolean b) {
+		// TODO Auto-generated method stub
+		collided = b;
 		
 	}
 	

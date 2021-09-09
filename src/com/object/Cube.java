@@ -2,15 +2,29 @@ package com.object;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Matrix3dc;
+import org.joml.Matrix3fc;
+import org.joml.Matrix3x2fc;
+import org.joml.Matrix4dc;
+import org.joml.Matrix4fc;
+import org.joml.Matrix4x3fc;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
 import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
+import org.joml.Vector3i;
 
 import com.graphics.Window;
 import com.utils.BufferUtils;
+import com.utils.KeyboardInput;
 import com.utils.MouseInput;
 import com.graphics.Texture;
 import com.graphics.VertexArray;
@@ -18,14 +32,6 @@ import com.graphics.VertexArray;
 
 public class Cube {
 
-	
-    private int displxInc = 0;
-
-    private int displyInc = 0;
-
-    private int displzInc = 0;
-
-    private int scaleInc = 0;
     
     private CubeItem[] cubeItems;
 
@@ -37,11 +43,6 @@ public class Cube {
 		this.cubeItems = cubeItems;
 	}
 
-	private int rotationX;
-
-	private int rotationZ;
-
-	private int rotationY;
 
 	
     public Cube() {
@@ -134,25 +135,38 @@ public class Cube {
     	VertexArray mesh2 = new VertexArray(positions, indices, textCoords2,  texture2);
     	
     	CubeItem cube_1 = new CubeItem(mesh1);
-    	cube_1.setPosition(3f, -0.2f, -20f);
+    	cube_1.setPosition(-10f, -0.2f, -20f);
     	
     	CubeItem cube_2 = new CubeItem(mesh2);
-    	cube_2.setPosition(39.5f, 39.5f, -20f);
+    	cube_2.setPosition(20f, 15f, -20f);
     	
     	CubeItem cube_3 = new CubeItem(mesh1);
-    	cube_3.setPosition(1f, 0f, -5f);
+    	cube_3.setPosition(1f, 10f, 5f);
     	
     	CubeItem cube_4 = new CubeItem(mesh1);
-    	cube_4.setPosition(1f, -1.3f, -9f);
+    	cube_4.setPosition(10f, -13f, -9f);
     	
     	CubeItem cube_5 = new CubeItem(mesh1);
-    	cube_5.setPosition(-3f, -1.3f, -6f);
+    	cube_5.setPosition(-3f, -1.3f, 19f);
     	
     	CubeItem cube_6 = new CubeItem(mesh1);
     	cube_6.setPosition(-1f, 0f, -9f);
     	
+    
     	cubeItems = new CubeItem[] { cube_1, cube_2, cube_3, cube_4, cube_5, cube_6 };
-    	
+    
+    	float distance;
+    	for(int i=0; i<6 ; i++)
+    	{
+    		for(int j=i+1 ; j < 6; j++)
+    		{
+    			distance = cubeItems[i].getPosition().distance(cubeItems[j].getPosition());
+    			if(distance < cubeItems[i].getScale())
+    			{
+    				System.out.println("collide : " + i + " and " +j);
+    			}
+    		}
+    	}
     	
     }
     
@@ -193,61 +207,8 @@ public class Cube {
     	return BufferUtils.listToArray(textCoords);
     }
     
-    // Cube's manual movement is restricted to rotational move 
-    // translation move is only enabled in Camera class which is acutally processed in MouseInput class
     
-    public void input(Window window) {
-    	//        displyInc = 0;
-    	//        displxInc = 0;
-    	//        displzInc = 0;
-    	scaleInc = 0;
-
-    	rotationX = 0;
-    	rotationY = 0;
-    	rotationZ = 0;
-
-    	if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-    		rotationX = 1;
-    	}else if (window.isKeyPressed(GLFW_KEY_UP)) {
-    		rotationX = -1;
-    	}
-    	// should be a d
-    	else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-    		rotationY = 1;
-    	}else if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-    		rotationY = -1;
-    	}
-
-    	
-    	//        else if (window.isKeyPressed(GLFW_KEY_Z)) {
-    	//            scaleInc = -1;
-    	//        } else if (window.isKeyPressed(GLFW_KEY_X)) {
-    	//            scaleInc = 1;
-    	//        } 
-    	//        //should be w s
-    	//        else if (window.isKeyPressed(GLFW_KEY_S)) {
-    	//        	rotationX = 1;
-    	//        }else if (window.isKeyPressed(GLFW_KEY_W)) {
-    	//        	rotationX = -1;
-    	//        }
-    	//        // should be a d
-    	//        else if (window.isKeyPressed(GLFW_KEY_D)) {
-    	//        	rotationY = 1;
-    	//        }else if (window.isKeyPressed(GLFW_KEY_A)) {
-    	//        	rotationY = -1;
-    	//        }
-    	//        
-    	//        else if (window.isKeyPressed(GLFW_KEY_R)) {
-    	//        	rotationZ = 1;
-    	//        }else if (window.isKeyPressed(GLFW_KEY_F)) {
-    	//        	rotationZ = -1;
-    	//        }
-        
-    }
-
-    
-    
-    public void update() {
+    public void update(KeyboardInput keyboardInput) {
 //    	if(cubeItems.length > 1)
 //    	{
 //    		System.out.println("The # of cubes are " + cubeItems.length);
@@ -261,32 +222,52 @@ public class Cube {
     		
     		
     		for (CubeItem each_cube : cubeItems) {
-    			
     			each_cube.updateRandomMove();
-    			Vector3f displInc = each_cube.getDisplInc();
     			
     			// Update position
     			//itemPos should be deep-copied, but seems like joml lib doens't have implementation of clone
-    		
-    			 
+    			Vector3f displInc = each_cube.getDisplInc();
     			Vector3f itemPos = each_cube.getPosition();
     			
     			itemPos.x = each_cube.getPosition().x;
     			itemPos.y = each_cube.getPosition().y;
     			itemPos.z = each_cube.getPosition().z;
-    			
-    			float posx = itemPos.x + displInc.x *0.05f;
-    			float posy = itemPos.y + displInc.y *0.05f;
-    			float posz = itemPos.z + displInc.z *0.05f;
 
+    			float posx = itemPos.x + displInc.x *(0.05f);
+    			float posy = itemPos.y + displInc.y *(0.05f);
+    			float posz = itemPos.z + displInc.z *(0.05f);
+    			
     			each_cube.setPosition(posx, posy, posz);
 
-//    			if(collisionCheck(each_cube))
-//    			{
-//    				//if collision, rollback
-//    				each_cube.setPosition(itemPos.x, itemPos.y, itemPos.z);
-//    			}
-/*
+    			if(collisionCheck(each_cube))
+    			{	
+    				//if Collision is just detected process
+    				// otherwise direction vector was set up correctly in previous iteration
+    				// so stick to it
+    				if(!each_cube.getCollided())
+    				{
+    					each_cube.setCollided(true);
+    					Vector3f dest = each_cube.getDestination();
+    					//if collision occurs, simply negate
+    					each_cube.setDestination(dest.negate());
+    					//dispInc will also be updated
+    					each_cube.setPosition(itemPos.x, itemPos.y, itemPos.z);
+    					displInc = each_cube.getDisplInc();
+    					posx = itemPos.x + displInc.x *(0.2f);
+    	    			posy = itemPos.y + displInc.y *(0.2f);
+    	    			posz = itemPos.z + displInc.z *(0.2f);
+    				}
+    			}else
+    			{
+    				if(each_cube.getCollided())
+    				{
+    					each_cube.setCollided(false);
+    				}
+    			}
+    			
+    			
+    			
+    			/*
     			// Update scale : should I keep this as movement of Z is doing the same function
     			float scale = each_cube.getScale();
     			scale += scaleInc * 0.05f;
@@ -294,14 +275,15 @@ public class Cube {
     				scale = 0;
     			}
     			each_cube.setScale(scale);
-*/
+    			 */
     			// Update rotation angle
-    			float rotation_x = each_cube.getRotation().x +  1.5f * rotationX; //
-    			float rotation_y = each_cube.getRotation().y +  1.5f * rotationY; //1.5f *
-    			float rotation_z = each_cube.getRotation().z +  1.5f * rotationZ;
+    			
+    			float rotation_x = each_cube.getRotation().x +  1.5f * keyboardInput.getRotationRate().x; //
+    			float rotation_y = each_cube.getRotation().y +  1.5f * keyboardInput.getRotationRate().y; //1.5f *
+    			float rotation_z = each_cube.getRotation().z +  1.5f * keyboardInput.getRotationRate().z;
 
     			each_cube.setRotation(rotation_x, rotation_y, rotation_z);   			     
-//    			System.out.println("x :" + each_cube.getPosition().x + ", y: " + each_cube.getPosition().y + ", z: "+ each_cube.getPosition().z);
+    			//    			System.out.println("x :" + each_cube.getPosition().x + ", y: " + each_cube.getPosition().y + ", z: "+ each_cube.getPosition().z);
     		}
     	}
     	/*No keyboard input then, each cube takes the random movement*/
@@ -351,7 +333,7 @@ public class Cube {
     			(y1 - y2) * (y1 - y2) +
     			(z1 - z2) * (z1 - z2));
     	
-    	return distance < (float)(Math.sqrt(2));
+    	return distance <( cube_b.getScale());
     }
 
 }

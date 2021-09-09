@@ -12,7 +12,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
 
-    private final Vector3f displInc;
+
 	
     //Mouse cursor position vector
     private final Vector2f displVec;
@@ -33,7 +33,7 @@ public class MouseInput {
         previousPos = new Vector2d(-1, -1);
         currentPos = new Vector2d(0, 0);
         displVec = new Vector2f();
-        displInc = new Vector3f();
+        
     }
 
     // Mouse event callback function registering	
@@ -68,27 +68,8 @@ public class MouseInput {
     }
 
 
-    public void input(Window window) {
+    public void input() {
 
-    	// Keyboard Input process, will be reflected to the movement of camera	
-    	displInc.x = 0;
-    	displInc.y = 0;
-    	displInc.z = 0;
-    	
-    	if (window.isKeyPressed(GLFW_KEY_Z)) {
-    		displInc.y = 1;
-    	} else if (window.isKeyPressed(GLFW_KEY_X)) {
-    		displInc.y = -1;
-    	} else if (window.isKeyPressed(GLFW_KEY_A)) {
-    		displInc.x = -1;
-    	} else if (window.isKeyPressed(GLFW_KEY_D)) {
-    		displInc.x = 1;
-    	} 
-    	else if (window.isKeyPressed(GLFW_KEY_W)) {
-    		displInc.z = -1;
-    	} else if (window.isKeyPressed(GLFW_KEY_S)) {
-    		displInc.z = 1;
-    	} 
 
     	// Mouse (left click drag) Input process, 
     	// Calculate the delta of previous and current coordinates in terms of mouse cursors
@@ -122,9 +103,7 @@ public class MouseInput {
     public boolean isRightButtonPressed() {
         return rightButtonPressed;
     }
-    public Vector3f getDisplInc() {
-    	return displInc;
-    }
+
     
     public Vector2f getDisplVec() {
     	return displVec;
