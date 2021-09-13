@@ -1,21 +1,12 @@
 package com.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.stb.STBImage.*;
 
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import javax.imageio.ImageIO;
-
-import org.lwjgl.system.MemoryStack;
 
 import com.utils.BufferUtils;
 
@@ -66,10 +57,8 @@ public class Texture {
 		
 		int result = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, result);
-		//the resolution should be sharp not blurry( GL_linear )
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		//
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, BufferUtils.createIntBuffer(data));
 		glBindTexture(GL_TEXTURE_2D, 0);
 		

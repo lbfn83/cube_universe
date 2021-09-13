@@ -33,7 +33,6 @@ import com.graphics.VertexArray;
 
 public class Cube {
 
-	private float collisionCalc = 0f;
 	
 	private CubeItem collisionCube;
 	
@@ -224,13 +223,7 @@ public class Cube {
     	return BufferUtils.listToArray(textCoords);
     }
     
-    /*
-     * Simplified version of collision resolution
-     * 0) Collision check and if two cubes are collided, 
-     * 1) move selected cube from collided position ( new variable required : how far this cube should be moved to be out of collision area ) 
-     * 2) swap the destination coordinates each other. 
-     * 
-     * */
+   
 
     public void update(KeyboardInput keyboardInput) throws CloneNotSupportedException {
     	
@@ -302,7 +295,13 @@ public class Cube {
 
 
 
-
+    /*
+     * collision resolution
+     * 0) Collision check and if two cubes are collided, 
+     * 1) move colliding cubes out of collided position ( new variable required : how far this cube should be moved to be out of collision area ) 
+     * 2) Use Newton's law to determine velocity vector of each cube after collision
+     * 
+     * */
 
 	private void collisionCheck() {
 
@@ -318,9 +317,12 @@ public class Cube {
 		{
 			for(int j = i+1; j < cubeItems.size(); j++)
 			{
-				if(intersect(cubeItems.get(i), cubeItems.get(j)))
+				float collisionCalc = intersect(cubeItems.get(i), cubeItems.get(j));
+				if( collisionCalc > 0)
 				{
 					Vector3f posVec = new Vector3f();
+					Vector3f posVecNegate = new Vector3f();
+					
 					Vector3f v1x = new Vector3f();  
 					Vector3f v1y = new Vector3f();
 					Vector3f v2x = new Vector3f();  
@@ -335,8 +337,11 @@ public class Cube {
 					/* From where the collision occurs, derive another two axis based vector system : v1x, v1y from cube a / v2x, v2y from cube b
 					*/
 					
+					Vector3f aPos = a.getPosition();
+					Vector3f bPos = b.getPosition();
+					
 					// Cube A perspective, derive two vectors 
-					a.getPosition().sub(b.getPosition(), posVec);
+					aPos.sub(bPos, posVec);
 
 					posVec.normalize();
 					
@@ -350,11 +355,11 @@ public class Cube {
 				    
 				    
 				   // Cube B perspective, derive two vectors 
-				    posVec.negate();
+				    posVec.negate(posVecNegate);
 				    
 				    Vector3f bCurrVel = b.getVelocity();
 					
-				    posVec.mul(posVec.dot(bCurrVel), v2x) ;
+				    posVecNegate.mul(posVecNegate.dot(bCurrVel), v2x) ;
 				    
 				    bCurrVel.sub(v2x, v2y);
 
@@ -375,6 +380,13 @@ public class Cube {
 				    bVel.add(temp);
 				    bVel.add(v2y);
 				    
+				    //move colliding cubes out of collided position 
+				    posVec.mul(collisionCalc/2);
+				    a.setPosition(aPos.x + posVec.x, aPos.y + posVec.y, aPos.z + posVec.z);
+				    
+				    posVecNegate.mul(collisionCalc/2);
+				    b.setPosition(bPos.x + posVecNegate.x, bPos.y + posVecNegate.y, bPos.z + posVecNegate.z);
+				    
 				    a.setVelocityCollision(aVel);
 				    b.setVelocityCollision(bVel);
 
@@ -388,7 +400,7 @@ public class Cube {
     
     
     
-    private boolean intersect(CubeItem cube_a, CubeItem cube_b)
+    private float intersect(CubeItem cube_a, CubeItem cube_b)
     {
     	float x1, x2;
     	float y1, y2;
@@ -410,8 +422,8 @@ public class Cube {
     	// seems to make the collision event is detected a bit early considering the objects are cubes
     	// so change the value to 1.2f
     	
-    	collisionCalc = (cube_b.getScale()*1.2f/2 + cube_a.getScale()*1.2f/2)  - distance;
-    	return collisionCalc > 0 ;
+    	float collisionCalc = (cube_b.getScale()*1.2f/2 + cube_a.getScale()*1.2f/2)  - distance;
+    	return collisionCalc  ;
     }
 
 }

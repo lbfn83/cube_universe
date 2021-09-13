@@ -2,18 +2,13 @@ package com.utils;
 
 import org.joml.Vector2d;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector3i;
 
 import com.graphics.Window;
-import com.object.Camera;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
 
-
-	
     //Mouse cursor position vector
     private final Vector2f displVec;
 

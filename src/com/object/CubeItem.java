@@ -3,14 +3,12 @@ package com.object;
 import java.util.Random;
 
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
 
 import com.graphics.VertexArray;
 
 
-import org.joml.Vector3f;
-
 public class CubeItem {
+	
 	private static int totalNumber = 0;
 
 	public static final float moveUpdateSensitivity = 0.5f;
@@ -23,70 +21,22 @@ public class CubeItem {
 	
 	private int cubeID;
 	
-    private final VertexArray mesh;// mesh가 왜 필요하지?어짜피 같은 VAO VBO에 다른 좌표만 넣어서 반복해서 넣어줄건데
+    private final VertexArray mesh;
     
     private Vector3f position;
     
     private Vector3f destination;
     
     private Vector3f velocity;
-
     
 	private float scale = 10f;
 
-	// half of cube's size should be taken into account when determine the destionation of it
-	// but where this should be calculated? after scale is set!
-	private float randomMin = -Background.scale + (scale/2 );//org.joml.Math.sqrt(2)
+	private float randomMin = -Background.scale + (scale/org.joml.Math.sqrt(2));
 	
-	private float randomMax = Background.scale - (scale/2 );
+	private float randomMax = Background.scale - (scale/org.joml.Math.sqrt(2));
 
     private Vector3f rotation;
     
-    public void setVelocityCollision(Vector3f velocity) {
-    	this.velocity = velocity;
-    	
-    	float xWeight, yWeight, zWeight, minWeight;
-    	
-    	// To calculate how far the cubeitem is from the wall of background in terms of each axis
-    	// Then calculate the minimum value among these so that the destination coordinates can be set up somewhere inside the cube
-    	if(velocity.x < 0)
-    	{
-    		xWeight = (randomMin - position.x)/velocity.x;    		
-    	}else
-    	{
-    		xWeight = (randomMax - position.x)/velocity.x; 
-    	}
-    	
-    	if(velocity.y < 0)
-    	{
-    		yWeight = (randomMin - position.y)/velocity.y;    		
-    	}else
-    	{
-    		yWeight = (randomMax - position.y)/velocity.y; 
-    	}
-    	
-    	if(velocity.z < 0)
-    	{
-    		zWeight = (randomMin - position.z)/velocity.z;    		
-    	}else
-    	{
-    		zWeight = (randomMax - position.z)/velocity.z; 
-    	}
-    	
-    	minWeight = Math.min(Math.min(xWeight, yWeight), zWeight); 
-    	
-    	
-    	destination.x = position.x + velocity.x * minWeight ;
-    	destination.y = position.y + velocity.y * minWeight;
-    	destination.z = position.z + velocity.z * minWeight;
-    	
-//    	if( (Math.abs(destination.x) > 39.3934)||(Math.abs(destination.y) > 39.3934) || (Math.abs(destination.z) > 39.3934)   )
-//    	{
-//    	System.out.println("abnormal");
-//    	}
-//    	System.out.println("Cube ID : "+ this.cubeID + "destination after collision: " +destination);
-//    
-    }
     
 
     public CubeItem(VertexArray va) {
@@ -109,35 +59,28 @@ public class CubeItem {
     }
     
     public void setDestination(Vector3f destination) {
-    	//every time set the position, its unit vector for movement should be calculated
-    	//This method either invoked by RandomMovement where cube almost reaches its dest
-    	// or when collision happened
     	
-    	//이거 굉장히 에러 프론이네.. 
-    	//dest 를 먼저 업데이트 한 후에 . velocity를 해줘야 하는데...
     	this.destination = destination;
 
+    	//every time set up a new destination, its unit velocity vector is also be calculated
     	calcVelocity();
+    }
+    // This method is only called when destination is newly generated
+    private void calcVelocity()
+    {
+    	Vector3f temp = new Vector3f(destination);
+    	velocity = temp.sub(position);
+    	velocity.normalize();
     }
     
     public Vector3f getPosition() {
     	
         return position;
     }
-    // Only when you set position, direction vector is calculated... 
-    // does it sound reasonable to you?
     
-    private void calcVelocity()
-    {
-    	Vector3f temp = new Vector3f(destination);
-		velocity = temp.sub(position);
-		velocity.normalize();
-    }
     
     public void setPosition(float x, float y, float z) {
-    	//every time set the position, its unit vector for movement shouldn't be calculated
     	
-//    	calcvelocity();
         this.position.x = x;
         this.position.y = y;
         this.position.z = z;
@@ -146,7 +89,7 @@ public class CubeItem {
     public float getScale() {
         return scale;
     }
-
+    // randomMin and Max is dependent on scale value
     public void setScale(float scale) {
     	randomMin = -Background.scale + (scale/2 * org.joml.Math.sqrt(2));
     	randomMax = Background.scale - (scale/2 * org.joml.Math.sqrt(2));
@@ -176,31 +119,27 @@ public class CubeItem {
         return mesh;
     }
     
-    private float randomNumGen()
-	{
-		return randomMin + r.nextFloat() * (randomMax - randomMin);
-
-	}
-    
 	public Vector3f getVelocity() {
 		return velocity;
 	}
 
 	public boolean updateRandomMove(boolean initStage) {
-		//position.distance(destination)
-		// if you use distance... step 안에 들면.. 
-		//+ step
 		if(initStage)
 		{
 			this.setDestination(new Vector3f(randomNumGen(), randomNumGen(), randomNumGen()));
 		}
-		else if(( destination.distance(position) <= (Vector3f.length(velocity.x* moveUpdateSensitivity, velocity.y* moveUpdateSensitivity, velocity.z* moveUpdateSensitivity) )) 
-				|| (position.distance(new Vector3f(0f,0f,0f)) > 2 * (Background.scale) /1.4 ))
+		
+		// 1. alternative to step : (Vector3f.length(velocity.x, velocity.y, velocity.z) 
+		// 2. Cube is considered to be sphere for simplification
+		// 3. when the cube is close to its destination, make sure it iterates in the update loop one more time  
+		// and moves all the way up to destination before generating new destination
+		else if(( destination.distance(position) <= step ) 
+				|| (position.distance(new Vector3f(0f,0f,0f)) > (2 * Background.scale) /org.joml.Math.sqrt(2)))
 		{
 			destUpdate = true;
 			System.out.println("Cube ID : "+ this.cubeID + "Velocity leng: " + velocity);
 		}
-		
+		// setPosition is done in below logic, so returning false to skip the another upcoming setPosition in Cube.update() method
 		if(destUpdate)
 		{
 			destUpdate = false;
@@ -213,4 +152,48 @@ public class CubeItem {
 	}
 
 	
+	private float randomNumGen()
+	{
+		return randomMin + r.nextFloat() * (randomMax - randomMin);
+		
+	}
+	
+	public void setVelocityCollision(Vector3f velocity) {
+		
+		this.velocity = velocity;
+		
+		float xWeight, yWeight, zWeight, minWeight;
+		// Derive Destination based on the velocity vector calculated from collision
+		// calculate the minimum steps to take among three axis until it hits the wall of background ( predicted projection of this object) 
+		if(velocity.x < 0)
+		{
+			xWeight = (randomMin - position.x)/velocity.x;    		
+		}else
+		{
+			xWeight = (randomMax - position.x)/velocity.x; 
+		}
+		
+		if(velocity.y < 0)
+		{
+			yWeight = (randomMin - position.y)/velocity.y;    		
+		}else
+		{
+			yWeight = (randomMax - position.y)/velocity.y; 
+		}
+		
+		if(velocity.z < 0)
+		{
+			zWeight = (randomMin - position.z)/velocity.z;    		
+		}else
+		{
+			zWeight = (randomMax - position.z)/velocity.z; 
+		}
+		
+		minWeight = Math.min(Math.min(xWeight, yWeight), zWeight); 
+		
+		
+		destination.x = position.x + velocity.x * minWeight ;
+		destination.y = position.y + velocity.y * minWeight;
+		destination.z = position.z + velocity.z * minWeight;
+	}
 }

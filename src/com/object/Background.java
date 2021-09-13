@@ -15,7 +15,7 @@ public class Background  {
 	// if the size of background scale grows, there was big black triangle shown up at the edge of
 	// the cube. it is caused by the far parameter in Projection Matrix   
 	// 
-	public static final float scale  = 20f;
+	public static final float scale  = 30f;
 
 	private final Vector3f rotation;
 

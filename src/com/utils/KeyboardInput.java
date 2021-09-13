@@ -11,16 +11,14 @@ public class KeyboardInput {
     
     private final Vector3f rotationRate;
 	
-    private int scaleInc;
-    
     public KeyboardInput()
     {
     	displInc = new Vector3f();
     	rotationRate = new Vector3f();
     }
+    // Keyboard Input event process in terms of implementing the movement of camera	
     public void input(Window window) {
 
-    	// Keyboard Input process, will be reflected to the movement of camera	
     	displInc.x = 0;
     	displInc.y = 0;
     	displInc.z = 0;
@@ -40,11 +38,6 @@ public class KeyboardInput {
     		displInc.z = 1;
     	} 
 
-
-    	// Cube's manual movement is restricted to rotational move 
-    	// translation move is only enabled in Camera class which is acutally processed in MouseInput class
-    	scaleInc = 0;
-
     	rotationRate.x = 0;
     	rotationRate.y = 0;
     	rotationRate.z = 0;
@@ -54,7 +47,6 @@ public class KeyboardInput {
     	}else if (window.isKeyPressed(GLFW_KEY_UP)) {
     		rotationRate.x = -1;
     	}
-    	// should be a d
     	else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
     		rotationRate.y = 1;
     	}else if (window.isKeyPressed(GLFW_KEY_LEFT)) {
