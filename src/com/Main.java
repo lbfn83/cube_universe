@@ -4,27 +4,20 @@ package com;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.system.MemoryUtil.*;
-import static org.lwjgl.glfw.Callbacks.*;
-import java.util.Date;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
 
-import com.utils.KeyboardInput;
-import com.utils.MouseInput;
-
+import com.graphics.MVPMatrix;
 import com.graphics.Shader;
 import com.graphics.Window;
-import com.object.Background;
-import com.object.Camera;
-import com.object.Cube;
-import com.object.CubeItem;
+import com.level.Background;
+import com.level.Camera;
+import com.level.Cube;
+import com.level.CubeItem;
+import com.utils.KeyboardInput;
+import com.utils.MouseInput;
 import com.utils.Timer;
-import com.graphics.MVPMatrix;
 
 
 
@@ -50,7 +43,6 @@ public class Main implements Runnable {
 	
     public static final int TARGET_UPS = 90;
     
-    
 	public void start() throws InterruptedException {
 		
 		thread = new Thread(this, "3D Cube");
@@ -58,16 +50,13 @@ public class Main implements Runnable {
 	}
 	
 	public void run() {
-		
 		init();
 		
 		runningLoop();
 		
 		glfwTerminate();
-		
 	}
-	
-	// game Engine part
+
 	private void init() {
 
 		window = new Window("3D Cube with pic", width, height);
@@ -104,14 +93,15 @@ public class Main implements Runnable {
 			elapsedTime = timer.getElapsedTime();
 			accumulator += elapsedTime;
 
-			//			System.out.println("time: " + accumulator);
-
+			//System.out.println("time: " + accumulator);
 			keyboardInput.input(window);
+			
 			//Get the delta of mouse cursor movement
 			mouseInput.input();
 
 			//Camera's movement is much smoother when it is not regulated by timer
 			camera.updateMouse(mouseInput);
+			
 			while (accumulator >= interval) {
 				accumulator -= interval;
 				camera.updateKeyboard(keyboardInput);
@@ -122,12 +112,7 @@ public class Main implements Runnable {
 					e.printStackTrace();
 				}
 			}
-
 			render();
-
-			//	            if ( !window.isvSync() ) {
-			//	                sync();
-			//	            }
 		}
 	}
 	 
@@ -139,8 +124,6 @@ public class Main implements Runnable {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
-		
-	
 	
 		int i = glGetError();
 		if ( i != GL_NO_ERROR)
@@ -148,39 +131,32 @@ public class Main implements Runnable {
 			System.out.println("LWJGL Error Code :" + i);
 		}
 		
-		
-//		
 		Shader.bgshader.enable();
-		
 		Shader.cubeshader.enable();
 
-		
-        //Update projection matrix
         Matrix4f projectionMatrix = mvpMatrix.getProjectionMatrix( window.getWidth(), window.getHeight());
         
         Matrix4f viewMatrix = mvpMatrix.getViewMatrix(camera);
         
-//        Matrix4f viewMatrixForCube = new Matrix4f(viewMatrix);
-        /*When the background should be fixed, Below statements are required to disable tranlation movement*/
+        /*When the background should be fixed regardless of camera movement, below will disable translation movement*/
         //        viewMatrix.m30(0);
         //        viewMatrix.m31(0);
         //        viewMatrix.m32(0);
         
+        Matrix4f modelMatrix = mvpMatrix.getModelMatrix(
+        		bg.getPosition(),
+        		bg.getRotation(),
+        		bg.getScale());
+
         Shader.bgshader.setUniform4fv("projectionMatrix", projectionMatrix);
        
         Shader.bgshader.setUniform1i("texture_sampler", 1);
         
         Shader.bgshader.setUniform4fv("viewMatrix", viewMatrix);
         
-        Matrix4f modelMatrix = mvpMatrix.getModelMatrix(
-        		bg.getPosition(),
-        		bg.getRotation(),
-        		bg.getScale());
         Shader.bgshader.setUniform4fv("modelMatrix", modelMatrix);
         
         bg.getMesh().render();
-        
-        
         
         Shader.cubeshader.setUniform4fv("projectionMatrix", projectionMatrix);
         
@@ -196,7 +172,7 @@ public class Main implements Runnable {
             		element.getRotation(),
             		element.getScale());
             Shader.cubeshader.setUniform4fv("modelMatrix", modelMatrix);
-            // Render the mes for this game item
+
             element.getMesh().render();
             element.getMesh().unbind();
         }

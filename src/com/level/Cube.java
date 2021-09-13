@@ -1,43 +1,21 @@
-package com.object;
+package com.level;
 
-import static org.lwjgl.glfw.GLFW.*;
-
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.joml.Matrix3dc;
-import org.joml.Matrix3fc;
-import org.joml.Matrix3x2fc;
-import org.joml.Matrix4dc;
-import org.joml.Matrix4fc;
-import org.joml.Matrix4x3fc;
-import org.joml.Quaternionf;
-import org.joml.Quaternionfc;
-import org.joml.Vector2f;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
-import org.joml.Vector3i;
 
-import com.graphics.Window;
-import com.utils.BufferUtils;
-import com.utils.KeyboardInput;
-import com.utils.MouseInput;
 import com.graphics.Texture;
 import com.graphics.VertexArray;
+import com.utils.BufferUtils;
+import com.utils.KeyboardInput;
 
 
 public class Cube {
-
-	
-	private CubeItem collisionCube;
 	
     private List<CubeItem> cubeItems;
 
+    
 	public List<CubeItem> getCubeItems() {
 		return cubeItems;
 	}
@@ -45,8 +23,6 @@ public class Cube {
 	public void setCubeItems(List<CubeItem> cubeItems) {
 		this.cubeItems = cubeItems;
 	}
-
-
 	
     public Cube() {
     	float[] positions = new float[]{
@@ -112,7 +88,7 @@ public class Cube {
     	};
     	
 
-    	// no brainer rule for setting up the index of each rect : {+0, +1, +2} {+3, +0, +2}
+    	// no brainer rule for setting up the index of each rectangle : {+0, +1, +2} {+3, +0, +2}
     	int[] indices = new int[]{
     			0, 1, 2, 3, 0, 2,
     			
@@ -127,7 +103,6 @@ public class Cube {
     			20, 21, 22, 23, 20, 22
     	};
     	
-    	//TODO Mesh for each cube should be created as each cube will contain different set of pictures
     	Texture texture1 = new Texture("res/3d_cube.jpg");
     	float[] textCoords1 = calcTextCoords(2, 3, texture1);
     	
@@ -167,12 +142,14 @@ public class Cube {
     	cubeItems = new ArrayList<CubeItem>();
     	cubeItems.add(cube_1);
     	cubeItems.add(cube_2);
-//    	cubeItems.add(cube_3);
-//    	cubeItems.add(cube_4);
-//    	cubeItems.add(cube_5);
-//    	cubeItems.add(cube_6);
-//    			{ cube_1, cube_2, cube_3, cube_4, cube_5, cube_6};
-    	float distance;
+    	cubeItems.add(cube_3);
+    	cubeItems.add(cube_4);
+    	cubeItems.add(cube_5);
+    	cubeItems.add(cube_6);
+    	
+    	
+    	
+//    	float distance;
 //    	for(int i=0; i<6 ; i++)
 //    	{
 //    		for(int j=i+1 ; j < 6; j++)
@@ -187,10 +164,9 @@ public class Cube {
     	
     }
     
-    //To extract coordinates of each image in a single texture and each texture contains multiple images 
+    //To extract coordinates of each image embedded in a texture that contains multiple images together 
     private float[] calcTextCoords( int numCols, int numRows, Texture texture) {
     	
-    	List<Float> positions = new ArrayList<>();
     	List<Float> textCoords = new ArrayList<>();
     	
     	float imageWidth = (float)texture.getWidth();
@@ -222,21 +198,16 @@ public class Cube {
     	}
     	return BufferUtils.listToArray(textCoords);
     }
-    
    
 
     public void update(KeyboardInput keyboardInput) throws CloneNotSupportedException {
     	
-    	//    	if(cubeItems.length > 1)
-    	//    	{
-    	//    		System.out.println("The # of cubes are " + cubeItems.length);
-    	//    	}
     	collisionCheck();
     	
     	for (CubeItem each_cube : cubeItems) {
-// before there is small diff between position and destination where new destination should be calculated
-    		// make sure cube must first move all the way to the destination.
-    		// The new destination coordinates is configured one more iteration of update after distance detection
+    		
+    		// when the cube is close to its destination, make sure it iterates in the update loop one more time for movement 
+    		// and moves all the way up to destination in the next loop of updateRandomMove before generating new destination
     		if(each_cube.updateRandomMove(false))
     		{
     			Vector3f velo = each_cube.getVelocity();
@@ -255,29 +226,29 @@ public class Cube {
 
 
     			/*debugging block*/
-    			if(each_cube.getCubeID() == 0)
-    			{
-    				//				if( !previousDispInc.equals(displInc))
-    				//					System.out.println("disp : " + displInc);
-    				//				previousDispInc = new Vector3f(displInc);
-    				//				System.out.println( "Position : " + each_cube.getPosition());
-    				//System.out.println( "Dest : " + each_cube.getDestination());
-    			}
-    			/***************d*d*****/
-
-
+    			/*
+	    			if(each_cube.getCubeID() == 0)
+	    			{
+	    				if( !previousDispInc.equals(displInc))
+	    					System.out.println("disp : " + displInc);
+	    				previousDispInc = new Vector3f(displInc);
+	    				System.out.println( "Position : " + each_cube.getPosition());
+	    				System.out.println( "Destination : " + each_cube.getDestination());
+	    			}
+    			 */
 
     			/*
-    			// Update scale : should I keep this as movement of Z is doing the same function
-    			float scale = each_cube.getScale();
-    			scale += scaleInc * 0.05f;
-    			if ( scale < 0 ) {
-    				scale = 0;
-    			}
-    			each_cube.setScale(scale);
-    			 */
+    			 *  scale adjusting code
+    			 *  
+	    			float scale = each_cube.getScale();
+	    			scale += scaleInc * 0.05f;
+	    			if ( scale < 0 ) {
+	    				scale = 0;
+	    			}
+	    			each_cube.setScale(scale);
+    			*/
+    			
     			// Update rotation angle
-
     			float rotation_x = each_cube.getRotation().x +  1.5f * keyboardInput.getRotationRate().x; //
     			float rotation_y = each_cube.getRotation().y +  1.5f * keyboardInput.getRotationRate().y; //1.5f *
     			float rotation_z = each_cube.getRotation().z +  1.5f * keyboardInput.getRotationRate().z;
@@ -286,14 +257,7 @@ public class Cube {
 
     		}
     	}
-    	
-    	
-    	
-    	
-    	
     }
-
-
 
     /*
      * collision resolution
@@ -387,6 +351,7 @@ public class Cube {
 				    posVecNegate.mul(collisionCalc/2);
 				    b.setPosition(bPos.x + posVecNegate.x, bPos.y + posVecNegate.y, bPos.z + posVecNegate.z);
 				    
+				    //update the velocity vector of each cube
 				    a.setVelocityCollision(aVel);
 				    b.setVelocityCollision(bVel);
 
@@ -395,11 +360,6 @@ public class Cube {
 		}
 	}
     		
-
-
-    
-    
-    
     private float intersect(CubeItem cube_a, CubeItem cube_b)
     {
     	float x1, x2;
@@ -417,7 +377,7 @@ public class Cube {
     			(y1 - y2) * (y1 - y2) +
     			(z1 - z2) * (z1 - z2));
 
-    	// To simplify the collision detection logic, the algorithm treats the cube as sphere looking object
+    	// To simplify the collision detection logic, the algorithm treats the cube as sphere object
     	// however, the root of 2 ( which is supposed to be the exact weight for the radius calculation when it comes to sphere)
     	// seems to make the collision event is detected a bit early considering the objects are cubes
     	// so change the value to 1.2f

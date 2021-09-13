@@ -3,7 +3,7 @@ package com.graphics;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import com.object.Camera;
+import com.level.Camera;
 
 public class MVPMatrix {
 

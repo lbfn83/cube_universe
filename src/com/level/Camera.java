@@ -1,4 +1,4 @@
-package com.object;
+package com.level;
 
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
@@ -40,15 +40,18 @@ public class Camera {
         position.y = y;
         position.z = z;
     }
-    // Only Yaw rotation is implemented so far
-    // Multiply the view matrix(Translation by a rotation matrix
-    public void movePosition(float offsetX, float offsetY, float offsetZ) {
-    	//sin is y coordinate, cos is x coordinate
-    	//https://gamedev.stackexchange.com/questions/90208/how-to-calculate-a-direction-vector-for-camera
-    	//이건 아무래도 rotation을 먹여주는 거거든
-    	//https://mathworld.wolfram.com/RotationMatrix.html
-    	
+    
+    // Yaw and Pitch rotations are implemented 
+    /*
+	    https://gamedev.stackexchange.com/questions/90208/how-to-calculate-a-direction-vector-for-camera
+	    https://mathworld.wolfram.com/RotationMatrix.html
 
+	     To derive right position of Camera : 
+	     Pre-multiplying a view matrix by a rotation matrix means "rotate in the global coordinate frame"
+     * 
+     */
+    public void movePosition(float offsetX, float offsetY, float offsetZ) {
+    	
         Matrix3f rotToTrslation = new Matrix3f();
         rotToTrslation.identity().rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
         .rotate((float)Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
@@ -110,8 +113,8 @@ public class Camera {
     }
     public void updateKeyboard(KeyboardInput keyboardInput)
     {
-		this.movePosition(keyboardInput.getDisplInc().x * 0.5f, keyboardInput.getDisplInc().y * 0.5f, keyboardInput.getDisplInc().z *0.5f);
-//		System.out.println("Camera x :" + this.getPosition().x + ", y: " + this.getPosition().y + ", z: "+ this.getPosition().z);
+    	this.movePosition(keyboardInput.getDisplInc().x * 0.5f, keyboardInput.getDisplInc().y * 0.5f, keyboardInput.getDisplInc().z *0.5f);
+    	//		System.out.println("Camera x :" + this.getPosition().x + ", y: " + this.getPosition().y + ", z: "+ this.getPosition().z);
 
     }
 }

@@ -1,4 +1,4 @@
-package com.object;
+package com.level;
 
 import java.util.Random;
 
@@ -129,7 +129,7 @@ public class CubeItem {
 			this.setDestination(new Vector3f(randomNumGen(), randomNumGen(), randomNumGen()));
 		}
 		
-		// 1. alternative to step : (Vector3f.length(velocity.x, velocity.y, velocity.z) 
+		// 1. alternative to step variable : (Vector3f.length(velocity.x, velocity.y, velocity.z) 
 		// 2. Cube is considered to be sphere for simplification
 		// 3. when the cube is close to its destination, make sure it iterates in the update loop one more time  
 		// and moves all the way up to destination before generating new destination

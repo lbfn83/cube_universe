@@ -1,4 +1,4 @@
-package com.object;
+package com.level;
 
 import org.joml.Vector3f;
 
@@ -8,13 +8,12 @@ import com.graphics.VertexArray;
 public class Background  {
 
 
-	private final VertexArray mesh;// mesh가 왜 필요하지?어짜피 같은 VAO VBO에 다른 좌표만 넣어서 반복해서 넣어줄건데
+	private final VertexArray mesh;
 
 	private final Vector3f position;
 
-	// if the size of background scale grows, there was big black triangle shown up at the edge of
-	// the cube. it is caused by the far parameter in Projection Matrix   
-	// 
+	// In case of increasing the scale, beware of 'far' argument in projection matrix
+	// which far is not big enough to accomodate the size after scaling, whole background wouldn't be displayed
 	public static final float scale  = 30f;
 
 	private final Vector3f rotation;
@@ -79,9 +78,8 @@ public class Background  {
     			20, 21, 22, 23, 20, 22
 		};
 
-		//TODO 6개의 texture를 면마다 잡아서 여기서 하나의 cube를 만들ㅇ저구
 		float[] textCoords = new float[]{
-				// left Face
+				// Front Face
 				0.333333f, 0.5f,
 				0.333333f, 0.f,
 				0.f, 0.f,
@@ -99,7 +97,7 @@ public class Background  {
 				0.666666f, 0.5f,
 				0.666666f, 1.f,
 
-				//			 Back Face
+				//	Back Face
 				0.333333f, 1.f,
 				0.333333f, 0.5f,
 				0.666666f, 0.5f,
@@ -121,8 +119,6 @@ public class Background  {
 
 
 		mesh = new VertexArray(positions, indices, textCoords,  texture);
-
-
 	}
 
 
@@ -139,12 +135,12 @@ public class Background  {
 	}
 
 	public void setPosition(float x, float y, float z) 
-		{
+	{
 
-			this.position.x = x;
-			this.position.y = y;
-			this.position.z = z;
-		}
+		this.position.x = x;
+		this.position.y = y;
+		this.position.z = z;
+	}
 
 
 	public VertexArray getMesh() {
@@ -152,4 +148,4 @@ public class Background  {
 	}
 
 
-	}
+}
