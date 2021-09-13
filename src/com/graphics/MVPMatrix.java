@@ -11,7 +11,7 @@ public class MVPMatrix {
 	// The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
 	private static final float Z_NEAR = 0.1f;
 
-	private static final float Z_FAR = 100.f;
+	private static final float Z_FAR = 1000.f;
 
 	private final Matrix4f projectionMatrix;
 	private final Matrix4f modelMatrix;
@@ -33,7 +33,7 @@ public class MVPMatrix {
 		return modelMatrix.translation(offset).rotateX((float)Math.toRadians(rotation.x)).rotateY((float)Math.toRadians(rotation.y))
 				.rotateZ((float)Math.toRadians(rotation.z)).scale(scale);
 	}
-	//only take into account Yaw and Pitch
+	//take into account Yaw and Pitch which are already applied to the input argument in movePosition method 
 	public Matrix4f getViewMatrix(Camera camera) {
 		Vector3f cameraPos = camera.getPosition();
 		Vector3f rotation = camera.getRotation();

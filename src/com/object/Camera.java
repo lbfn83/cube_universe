@@ -57,29 +57,29 @@ public class Camera {
         position.y += rotToTrslation.m10 * offsetX  + rotToTrslation.m11 * offsetY + rotToTrslation.m12 * offsetZ;
     	position.z += rotToTrslation.m20 * offsetX  + rotToTrslation.m21 * offsetY + rotToTrslation.m22 * offsetZ;
         
-        if ( position.x > Background.scale - 1f )
+        if ( position.x > Background.scale - 0.5f )
         {
-        	position.x =  Background.scale - 1f;
+        	position.x =  Background.scale - 0.5f;
         }
-        if ( position.x < - (Background.scale - 1f) )
+        if ( position.x < - (Background.scale - 0.5f) )
         {
-        	position.x = -( Background.scale - 1f);
+        	position.x = -( Background.scale - 0.5f);
         }
-        if ( position.y > Background.scale - 1f )
+        if ( position.y > Background.scale - 0.5f )
         {
-        	position.y =  Background.scale - 1f;
+        	position.y =  Background.scale - 0.5f;
         }
-        if ( position.y < - (Background.scale - 1f) )
+        if ( position.y < - (Background.scale - 0.5f) )
         {
-        	position.y = -( Background.scale - 1f);
+        	position.y = -( Background.scale - 0.5f);
         }
-        if ( position.z > Background.scale - 1f )
+        if ( position.z > Background.scale - 0.5f )
         {
-        	position.z =  Background.scale - 1f ;
+        	position.z =  Background.scale - 0.5f ;
         }
-        if ( position.z < - (Background.scale - 1f) )
+        if ( position.z < - (Background.scale - 0.5f) )
         {
-        	position.z = -( Background.scale - 1f);
+        	position.z = -( Background.scale - 0.5f);
         }
     }
 

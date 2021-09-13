@@ -115,7 +115,12 @@ public class Main implements Runnable {
 			while (accumulator >= interval) {
 				accumulator -= interval;
 				camera.updateKeyboard(keyboardInput);
-				cubegroup.update(keyboardInput);
+
+				try {
+					cubegroup.update(keyboardInput);
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
 			}
 
 			render();
