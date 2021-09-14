@@ -1,5 +1,5 @@
 # Java related
-target/**
+target/
 *.jar
 *.war
 *.ear
