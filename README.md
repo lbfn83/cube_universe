@@ -22,4 +22,4 @@ Cube Universe is a cube collision simulator using LWJGL.
 # **Future**
 1. Add Cube's z rotation
 2. Any keyboard input related to the rotation of Cube should pause the movement of cube for a certain amount of time and then resume randomized movement after timer expires
-   
+3. Lighting effect   
