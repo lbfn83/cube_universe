@@ -59,7 +59,7 @@ public class Main implements Runnable {
 
 	private void init() {
 
-		window = new Window("3D Cube with pic", width, height);
+		window = new Window("Cube Universe", width, height);
 		window.init();
 
 		camera = new Camera(new Vector3f(0f, 0f, 0f));
