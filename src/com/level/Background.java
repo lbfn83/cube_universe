@@ -14,7 +14,7 @@ public class Background  {
 
 	// In case of increasing the scale, beware of 'far' argument in projection matrix
 	// which far is not big enough to accomodate the size after scaling, whole background wouldn't be displayed
-	public static final float scale  = 30f;
+	public static final float scale  = 50f;
 
 	private final Vector3f rotation;
 

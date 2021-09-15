@@ -103,14 +103,18 @@ public class Cube {
     			20, 21, 22, 23, 20, 22
     	};
     	
-    	Texture texture1 = new Texture("res/3d_cube.jpg");
-    	float[] textCoords1 = calcTextCoords(2, 3, texture1);
+    	Texture texture1 = new Texture("res/Australia.jpg");
+    	float[] textCoords1 = calcTextCoords(3, 2, texture1);
     	
-    	Texture texture2 = new Texture("res/skybox.png");
+    	Texture texture2 = new Texture("res/korea.jpg");
     	float[] textCoords2 = calcTextCoords(3, 2, texture2);
+    	
+    	Texture texture3 = new Texture("res/vietnam.jpg");
+    	float[] textCoords3 = calcTextCoords(3, 2, texture3);
     	
     	VertexArray mesh1 = new VertexArray(positions, indices, textCoords1,  texture1);
     	VertexArray mesh2 = new VertexArray(positions, indices, textCoords2,  texture2);
+    	VertexArray mesh3= new VertexArray(positions, indices, textCoords3,  texture3);
     	
     	CubeItem cube_1 = new CubeItem(mesh1);
     	cube_1.setPosition(-10f, -0.2f, -20f);
@@ -122,7 +126,7 @@ public class Cube {
     	cube_2.updateRandomMove(true);
     	cube_2.setScale(15f);
     	
-    	CubeItem cube_3 = new CubeItem(mesh1);
+    	CubeItem cube_3 = new CubeItem(mesh3);
     	cube_3.setPosition(1f, 10f, 5f);
     	cube_3.updateRandomMove(true);
     	cube_3.setScale(6f);
@@ -131,11 +135,11 @@ public class Cube {
     	cube_4.setPosition(10f, -13f, -9f);
     	cube_4.updateRandomMove(true);
     	
-    	CubeItem cube_5 = new CubeItem(mesh1);
+    	CubeItem cube_5 = new CubeItem(mesh2);
     	cube_5.setPosition(-3f, -1.3f, 19f);
     	cube_5.updateRandomMove(true);
     	
-    	CubeItem cube_6 = new CubeItem(mesh1);
+    	CubeItem cube_6 = new CubeItem(mesh3);
     	cube_6.setPosition(-1f, 0f, -9f);
     	cube_6.updateRandomMove(true);
     

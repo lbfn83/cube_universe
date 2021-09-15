@@ -137,13 +137,13 @@ public class CubeItem {
 				|| (position.distance(new Vector3f(0f,0f,0f)) > (2 * Background.scale) /org.joml.Math.sqrt(2)))
 		{
 			destUpdate = true;
-			System.out.println("Cube ID : "+ this.cubeID + "Velocity leng: " + velocity);
+			//			System.out.println("Cube ID : "+ this.cubeID + "Velocity leng: " + velocity);
 		}
 		// setPosition is done in below logic, so returning false to skip the another upcoming setPosition in Cube.update() method
 		if(destUpdate)
 		{
 			destUpdate = false;
-			System.out.println("Cube ID : "+ this.cubeID + "dest: " + destination + " position: " + position);
+			//			System.out.println("Cube ID : "+ this.cubeID + "dest: " + destination + " position: " + position);
 			setPosition(destination.x, destination.y, destination.z);
 			this.setDestination(new Vector3f(randomNumGen(), randomNumGen(), randomNumGen()));
 			return false;
