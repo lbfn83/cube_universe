@@ -103,13 +103,13 @@ public class Cube {
     			20, 21, 22, 23, 20, 22
     	};
     	
-    	Texture texture1 = new Texture("res/Australia.jpg");
+    	Texture texture1 = new Texture("res/Australia_rev3.jpg");
     	float[] textCoords1 = calcTextCoords(3, 2, texture1);
     	
-    	Texture texture2 = new Texture("res/korea.jpg");
+    	Texture texture2 = new Texture("res/korea_rev3.jpg");
     	float[] textCoords2 = calcTextCoords(3, 2, texture2);
     	
-    	Texture texture3 = new Texture("res/vietnam.jpg");
+    	Texture texture3 = new Texture("res/vietnam_rev3.jpg");
     	float[] textCoords3 = calcTextCoords(3, 2, texture3);
     	
     	VertexArray mesh1 = new VertexArray(positions, indices, textCoords1,  texture1);
